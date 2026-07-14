@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Shweta Swapnil Wedding//Wedding Invite//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:shweta-swapnil-wedding-20261223@github-pages
+DTSTAMP:20260715T000000Z
+DTSTART;TZID=Asia/Kolkata:20261223T200000
+DTEND;TZID=Asia/Kolkata:20261224T000000
+SUMMARY:Shweta weds Swapnil
+LOCATION:Greenland Resort, Patia, Bhubaneshwar
+DESCRIPTION:Wedding celebration of Shweta and Swapnil. RSVP: swapniljena0@gmail.com
+END:VEVENT
+END:VCALENDAR
