@@ -1,0 +1,14 @@
+{
+  "name": "shweta-swapnil-wedding",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wedding invitation site for Shweta and Swapnil, 23 December 2026.",
+  "type": "module",
+  "scripts": {
+    "photos": "node tools/build-photos.mjs",
+    "serve": "python3 -m http.server 8080"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
