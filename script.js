@@ -26,7 +26,9 @@
      Countdown
      --------------------------------------------------------------- */
   function initCountdown() {
-    const weddingTime = new Date('2026-12-23T20:00:00+05:30').getTime();
+    // Counts down to when the evening starts for guests (Baraati, 6 PM), not to
+    // the 11 PM ceremony — change this to T23:00 if you'd rather it target that.
+    const weddingTime = new Date('2026-12-23T18:00:00+05:30').getTime();
     const els = Object.fromEntries(
       ['days', 'hours', 'minutes', 'seconds'].map(id => [id, $(id)])
     );

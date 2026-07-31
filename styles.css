@@ -920,6 +920,9 @@ h2 {
 }
 .reveal-stagger.in-view > *:nth-child(2) { transition-delay: .12s; }
 .reveal-stagger.in-view > *:nth-child(3) { transition-delay: .24s; }
+.reveal-stagger.in-view > *:nth-child(4) { transition-delay: .36s; }
+.reveal-stagger.in-view > *:nth-child(5) { transition-delay: .48s; }
+.reveal-stagger.in-view > *:nth-child(6) { transition-delay: .60s; }
 
 @keyframes petalFall {
   0% { translate: 0 -10vh; rotate: 0deg; }
@@ -944,6 +947,184 @@ h2 {
   .cta-row { grid-template-columns: 1fr 1fr; }
   .story-card { display: grid; grid-template-columns: .95fr 1fr; align-items: center; max-width: 850px; }
   .story-card img { border-radius: 26px 10px 10px 26px; aspect-ratio: 3/4; }
+}
+
+/* ============================================================
+   Families
+   ============================================================ */
+
+.families {
+  align-content: center;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 220, 148, .09), transparent 15rem),
+    linear-gradient(180deg, rgba(37, 4, 13, .12), rgba(37, 4, 13, .3));
+}
+.family-pair {
+  width: min(100%, 440px);
+  margin-inline: auto;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+.family-card {
+  width: 100%;
+  padding: 26px 22px 28px;
+  text-align: center;
+}
+.family-name {
+  margin: 0 0 10px;
+  font-family: var(--font-script);
+  font-size: clamp(46px, 14vw, 62px);
+  line-height: .86;
+  color: #8d1530;
+}
+.family-relation {
+  margin: 0 0 10px;
+  font: 500 10px/1 var(--font-ui);
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: #a76516;
+}
+.family-parents {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(19px, 4.8vw, 23px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: .01em;
+  color: #5d2631;
+}
+.family-parents span {
+  display: inline-block;
+  margin: 2px 0;
+  color: #b98232;
+  font-size: .8em;
+}
+/* The "weds" hinge between the two cards, with a gold thread through it. */
+.family-join {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 34px;
+}
+.family-join::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 22%;
+  right: 22%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(247, 198, 109, .6), transparent);
+}
+.family-join span {
+  position: relative;
+  padding: 0 14px;
+  font-family: var(--font-script);
+  font-size: clamp(30px, 8vw, 40px);
+  line-height: 1;
+  color: var(--gold);
+  text-shadow: 0 0 24px rgba(255, 208, 119, .3);
+}
+
+/* ============================================================
+   Schedule
+   ============================================================ */
+
+.schedule {
+  align-content: center;
+  gap: 26px;
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Push the spinning mandala further out and dim it here — at its default
+   position it sits right behind the timeline text and hurts legibility. */
+.schedule .floating-mandala {
+  right: -290px;
+  top: 6%;
+  opacity: .07;
+}
+.schedule {
+  background:
+    radial-gradient(circle at 86% 18%, rgba(255, 220, 148, .1), transparent 15rem),
+    linear-gradient(180deg, rgba(37, 4, 13, .2), rgba(37, 4, 13, .55));
+}
+.timeline {
+  width: min(100%, 440px);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+}
+.timeline-item {
+  position: relative;
+  z-index: 1;                        /* keep the times above the mandala */
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 16px;
+  padding: 0 0 26px 0;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+/* The thread linking the events, stopping at the final marker. */
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 95px;
+  top: 14px;
+  bottom: -4px;
+  width: 1px;
+  background: linear-gradient(180deg, rgba(247, 198, 109, .5), rgba(247, 198, 109, .16));
+}
+.timeline-item:last-child::before { display: none; }
+/* Diamond marker, echoing the gold rule elsewhere on the page. */
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  left: 92px;
+  top: 9px;
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  background: linear-gradient(145deg, #ffeaa9, #e0a94a);
+  box-shadow: 0 0 12px rgba(247, 198, 109, .5);
+}
+.timeline-time {
+  margin: 0;
+  padding-right: 16px;
+  text-align: right;
+  font: 500 clamp(14px, 3.6vw, 16px)/1.35 var(--font-ui);
+  letter-spacing: .04em;
+  white-space: nowrap;               /* "11:00 PM" should not break across lines */
+  color: #ffe7aa;
+  font-variant-numeric: tabular-nums;
+}
+.timeline-time small {
+  display: block;
+  margin-top: 3px;
+  font-size: 9px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255, 231, 170, .62);
+}
+.timeline-copy { padding-top: 1px; }
+.timeline-copy h3 {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 6vw, 31px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: .01em;
+  color: #fff6e0;
+}
+.timeline-copy p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(16px, 4vw, 18px);
+  font-style: italic;
+  line-height: 1.45;
+  color: rgba(255, 240, 214, .78);
 }
 
 /* ============================================================
@@ -1231,6 +1412,22 @@ body.lightbox-open { overflow: hidden; }
   .lightbox .swiper-slide { padding: 56px 72px 32px; }
 }
 
+@media (min-width: 720px) {
+  /* Bride and groom side by side, with "weds" hinging between them. */
+  .family-pair {
+    width: min(100%, 900px);
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 8px;
+  }
+  .family-join { width: auto; height: auto; padding: 0 6px; }
+  .family-join::before { left: 50%; right: 50%; top: -34px; bottom: -34px; width: 1px; height: auto; background: linear-gradient(180deg, transparent, rgba(247,198,109,.5), transparent); }
+  .timeline { width: min(100%, 560px); }
+  .timeline-item { grid-template-columns: 108px 1fr; }
+  .timeline-item::before { left: 107px; }
+  .timeline-item::after { left: 104px; }
+}
+
 @media (min-width: 960px) {
   .detail-stack {
     width: min(100%, 1020px);
@@ -1257,7 +1454,8 @@ body.lightbox-open { overflow: hidden; }
 
 /* Let the browser skip layout and paint for sections that are far offscreen.
    contain-intrinsic-size keeps the scrollbar from jumping while they're skipped. */
-.section.gallery, .section.venue, .section.rsvp, .section.photo-story {
+.section.gallery, .section.venue, .section.rsvp, .section.photo-story,
+.section.families, .section.schedule {
   content-visibility: auto;
   contain-intrinsic-size: auto 100svh;
 }
