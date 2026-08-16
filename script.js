@@ -140,25 +140,6 @@
       </section>`).join('');
   }
 
-  /** Summary card above the timeline: first event, and how far the celebrations run. */
-  function renderWhenSummary(cfg) {
-    const schedule = Array.isArray(cfg?.schedule) ? cfg.schedule.filter(i => isText(i?.title)) : [];
-    if (schedule.length < 1) return;
-    const first = schedule[0];
-    const last = schedule[schedule.length - 1];
-    const primary = $('whenPrimary');
-    const span = $('whenSpan');
-    if (primary && isText(first.time)) {
-      primary.textContent = `${isText(first.date) ? `${first.date}, ` : ''}${first.time} onwards`;
-    }
-    if (span) {
-      span.textContent = (last !== first && isText(last.time))
-        ? `through ${isText(last.date) ? `${last.date}, ` : ''}${last.time}`
-        : '';
-      span.hidden = !span.textContent;
-    }
-  }
-
   function renderVenues(cfg) {
     const host = $('venueList');
     const venues = Array.isArray(cfg?.venues) ? cfg.venues.filter(v => isText(v?.name)) : [];
@@ -195,20 +176,45 @@
     section.hidden = false;
   }
 
+  /**
+   * The whole RSVP block comes from config, not just the number — the two sides
+   * point at different parents, and may want different wording.
+   *
+   * Optional keys: heading, message, buttonLabel, callLabel, smsBody.
+   */
   function renderRsvp(cfg) {
     const rsvp = cfg?.rsvp;
     if (!rsvp) return;
-    const phone = isText(rsvp.phone) ? rsvp.phone.replace(/\s+/g, '') : '';
+
+    const phone = isText(rsvp.phone) ? rsvp.phone.replace(/[^\d+]/g, '') : '';
     const btn = $('rsvpBtn');
     const call = $('rsvpCallBtn');
     const name = $('rsvpContactName');
     const relation = $('rsvpContactRelation');
+    const label = $('rsvpButtonLabel');
+    const heading = $('rsvpHeading');
+    const message = $('rsvpMessage');
 
-    if (phone && btn) btn.href = `sms:${phone}`;
-    if (phone && call) call.href = `tel:${phone}`;
+    if (isText(rsvp.heading) && heading) heading.textContent = rsvp.heading;
+    if (isText(rsvp.message) && message) message.textContent = rsvp.message;
+    if (isText(rsvp.buttonLabel) && label) label.textContent = rsvp.buttonLabel;
     if (isText(rsvp.contactName) && name) name.textContent = rsvp.contactName;
     if (isText(rsvp.contactRelation) && relation) relation.textContent = rsvp.contactRelation;
-    if (!phone) { call?.remove(); }
+    if (isText(rsvp.callLabel) && call) call.textContent = rsvp.callLabel;
+
+    if (phone) {
+      // iOS wants sms:number&body=, Android wants sms:number?body=. Skipping the
+      // prefill entirely is the one thing that behaves the same everywhere.
+      if (btn) btn.href = isText(rsvp.smsBody)
+        ? `sms:${phone}${/iPhone|iPad|Macintosh/.test(navigator.userAgent) ? '&' : '?'}body=${encodeURIComponent(rsvp.smsBody)}`
+        : `sms:${phone}`;
+      if (call) call.href = `tel:${phone}`;
+    } else {
+      // No number configured: an sms: link to nowhere is worse than no button.
+      btn?.remove();
+      call?.remove();
+      relation?.remove();
+    }
   }
 
   async function initFromConfig() {
@@ -223,7 +229,6 @@
 
     if (cfg) {
       applyBindings(cfg);
-      renderWhenSummary(cfg);
       renderSchedule(cfg);
       renderVenues(cfg);
       renderRsvp(cfg);
@@ -375,20 +380,112 @@
   }
 
   /**
-   * Fade out the hero's scroll cue once the guest has clearly started reading.
-   * Deliberately IntersectionObserver rather than ScrollTrigger: it needs no
-   * position caching, so it can't go stale if the layout shifts underneath it.
+   * Persistent scroll indicator, pinned bottom-centre for the whole page.
+   *
+   * The ring fills with scroll progress, so it reads as "how much is left"
+   * rather than just "there is more". Tapping it advances to the next section;
+   * once you reach the end it flips to point up and goes back to the top.
+   *
+   * Driven by a plain passive scroll listener rather than ScrollTrigger: it
+   * must stay correct even if the layout shifts, and it costs one rAF-throttled
+   * write of two custom properties.
    */
   function initScrollCue() {
     const cue = $('scrollCue');
+    const bar = $('scrollCueBar');
     if (!cue) return;
-    const target = document.querySelector('#families') || document.querySelector('#invite');
-    if (!target || !('IntersectionObserver' in window)) return;
 
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { cue.classList.add('is-hidden'); io.disconnect(); }
-    }, { threshold: 0.2 });
-    io.observe(target);
+    const CIRCUMFERENCE = 2 * Math.PI * 21;   // r=21 in the SVG
+    let atEnd = false;
+    let ticking = false;
+
+    const sections = () => [...document.querySelectorAll('main > section')]
+      .filter(s => !s.hidden && s.offsetParent !== null);
+
+    function update() {
+      ticking = false;
+      const doc = document.documentElement;
+      const max = Math.max(1, doc.scrollHeight - window.innerHeight);
+      const y = window.scrollY || window.pageYOffset || 0;
+      const progress = clamp(y / max, 0, 1);
+
+      if (bar) bar.style.setProperty('--scroll-dash', String(CIRCUMFERENCE * (1 - progress)));
+
+      // Near the bottom the cue becomes back-to-top.
+      const end = progress > 0.985;
+      if (end !== atEnd) {
+        atEnd = end;
+        cue.classList.toggle('is-top', end);
+        cue.setAttribute('aria-label', end ? 'Back to top' : 'Scroll to the next section');
+      }
+      // Hide it while the gates are still shut — the closed title says "scroll"
+      // already, and two prompts at once is noise.
+      cue.classList.toggle('is-hidden', y < 40);
+    }
+
+    const onScroll = () => {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+
+    cue.addEventListener('click', () => {
+      const smooth = reduceMotion ? 'auto' : 'smooth';
+      if (atEnd) { window.scrollTo({ top: 0, behavior: smooth }); return; }
+      // Advance to the first section whose top is meaningfully below the fold.
+      const next = sections().find(s => s.getBoundingClientRect().top > 24);
+      if (next) next.scrollIntoView({ behavior: smooth, block: 'start' });
+      else window.scrollTo({ top: document.documentElement.scrollHeight, behavior: smooth });
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Section dividers
+
+     Built here rather than in the markup so they can only ever appear between
+     two sections that actually survived: the gallery and compliments sections
+     remove themselves, which would otherwise strand a divider.
+     --------------------------------------------------------------- */
+  function initSectionDividers() {
+    const sections = [...document.querySelectorAll('main > section')]
+      .filter(s => !s.hidden && s.id !== 'top');   // the gate scene is sticky; leave its edge alone
+    if (sections.length < 2) return;
+
+    const dividers = [];
+    sections.slice(0, -1).forEach(section => {
+      const divider = document.createElement('div');
+      divider.className = 'section-divider';
+      divider.setAttribute('aria-hidden', 'true');
+      divider.innerHTML = '<span class="section-divider-rule"></span><span class="section-divider-motif"></span>';
+      section.after(divider);
+      dividers.push(divider);
+    });
+
+    if (!hasGSAP || reduceMotion) return;        // static dividers are fine
+
+    dividers.forEach(divider => {
+      const rule = divider.querySelector('.section-divider-rule');
+      const motif = divider.querySelector('.section-divider-motif');
+
+      // Draw the rule outward from the motif as the divider comes into view.
+      gsap.fromTo(rule,
+        { '--divider-scale': 0.1, '--divider-opacity': 0 },
+        {
+          '--divider-scale': 1, '--divider-opacity': 1, ease: 'none',
+          scrollTrigger: { trigger: divider, start: 'top 96%', end: 'top 62%', scrub: true, invalidateOnRefresh: true },
+        }
+      );
+      // The motif turns with the scroll, and unwinds when you scroll back up.
+      gsap.fromTo(motif,
+        { '--divider-spin': '0deg' },
+        {
+          '--divider-spin': '180deg', ease: 'none',
+          scrollTrigger: { trigger: divider, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true },
+        }
+      );
+    });
   }
 
   /* ---------------------------------------------------------------
@@ -679,8 +776,13 @@
     const cfg = await initFromConfig();
     initCountdown(cfg?.countdownTarget);
     initScrollEffects(initPetals());
-    initScrollCue();
     initMusic();
+    // Must come after the gallery has decided whether it exists, so a divider
+    // is never left stranded next to a section that removed itself.
     await initGallery(cfg);
+    initSectionDividers();
+    initScrollCue();
+    // Dividers add height; everything measured before now needs remeasuring.
+    if (hasGSAP) ScrollTrigger.refresh();
   })();
 })();

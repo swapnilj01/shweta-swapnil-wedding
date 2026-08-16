@@ -19,17 +19,40 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { mkdir, mkdtemp, open, readdir, readFile, writeFile, stat, copyFile, rm } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import os from 'node:os';
 
 const run = promisify(execFile);
 
-const ROOT      = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ORIGINALS = path.join(ROOT, 'photos', 'originals');
-const OPTIMIZED = path.join(ROOT, 'photos', 'optimized');
-const JSON_PATH = path.join(ROOT, 'photos', 'photos.json');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+/**
+ * Which folder holds this side's photos. Read from config.json's
+ * gallery.photosDir so the bride and groom repos can each point at their own
+ * folder while running identical code. Defaults to "photos".
+ */
+function readPhotosDir() {
+  try {
+    const cfg = JSON.parse(readFileSync(path.join(ROOT, 'config.json'), 'utf8'));
+    const dir = cfg?.gallery?.photosDir;
+    if (typeof dir === 'string' && dir.trim()) {
+      // Keep it inside the project; a stray "../" would write outside the repo.
+      const resolved = path.resolve(ROOT, dir.trim());
+      if (resolved.startsWith(ROOT + path.sep)) return resolved;
+      console.warn(`  ! gallery.photosDir "${dir}" is outside the project; using "photos" instead.`);
+    }
+  } catch { /* no config, or unreadable — fall through to the default */ }
+  return path.join(ROOT, 'photos');
+}
+
+const PHOTOS_DIR = readPhotosDir();
+const ORIGINALS  = path.join(PHOTOS_DIR, 'originals');
+const OPTIMIZED  = path.join(PHOTOS_DIR, 'optimized');
+const JSON_PATH  = path.join(PHOTOS_DIR, 'photos.json');
+/** Web path prefix written into photos.json, e.g. "photos/optimized/x.webp". */
+const WEB_PREFIX = path.relative(ROOT, OPTIMIZED).split(path.sep).join('/');
 
 /** Widths we emit. The browser picks one via srcset; phones normally take 640 or 1024. */
 const WIDTHS = [640, 1024, 1600];
@@ -238,8 +261,9 @@ async function main() {
     .map(e => e.name);
 
   console.log(`\n${c.bold('Building gallery photos')}`);
-  console.log(c.dim(`  from  photos/originals/  (${sources.length} photo${sources.length === 1 ? '' : 's'})`));
-  console.log(c.dim(`  into  photos/optimized/  at ${WIDTHS.join(' / ')}px WebP\n`));
+  const fromRel = path.relative(ROOT, ORIGINALS).split(path.sep).join('/');
+  console.log(c.dim(`  from  ${fromRel}/  (${sources.length} photo${sources.length === 1 ? '' : 's'})`));
+  console.log(c.dim(`  into  ${WEB_PREFIX}/  at ${WIDTHS.join(' / ')}px WebP\n`));
 
   if (ignored.length) {
     warn(`Skipped ${ignored.length} unsupported file(s): ${ignored.slice(0, 5).join(', ')}` +
@@ -304,7 +328,7 @@ async function main() {
         width: w,
         height: Math.max(1, Math.round((srcH * w) / srcW)),
         file: path.join(OPTIMIZED, `${id}-${w}.webp`),
-        rel: `photos/optimized/${id}-${w}.webp`,
+        rel: `${WEB_PREFIX}/${id}-${w}.webp`,
       }));
 
       const outputs = [...variants.map(v => v.file), lqipFile];

@@ -70,11 +70,6 @@
             <p class="script-kicker" data-bind="hero.kicker">You are invited to celebrate</p>
             <h1><span data-bind="couple.top.name">Shweta</span><em>weds</em><span data-bind="couple.bottom.name">Swapnil</span></h1>
             <p class="hero-copy" data-bind="hero.tagline">Be a part of two souls witnessing the start of their forever journey.</p>
-
-            <div class="scroll-cue" id="scrollCue" aria-hidden="true">
-              <span class="scroll-cue-chevron"></span>
-              <small>Scroll for the details</small>
-            </div>
           </div>
         </div>
 
@@ -133,45 +128,7 @@
       </div>
     </section>
 
-    <!-- Names come from config.json's bestCompliments.names. Starts hidden so it
-         never flashes an empty heading, and removes itself if the list is empty. -->
-    <section class="section compliments" id="compliments" hidden>
-      <div class="side-bloom side-bloom-left parallax-layer" data-speed="0.16" aria-hidden="true"></div>
-      <div class="section-heading reveal">
-        <p class="label">With</p>
-        <h2 id="complimentsHeading" data-bind="bestCompliments.heading">Best Compliments From</h2>
-        <div class="gold-rule" aria-hidden="true"><span></span></div>
-      </div>
-      <ul class="compliments-list reveal" id="complimentsList"><!-- built by script.js --></ul>
-    </section>
 
-    <section class="section details" id="details">
-      <div class="floating-mandala parallax-layer" data-speed="0.16" aria-hidden="true"></div>
-      <div class="section-heading reveal">
-        <p class="label">The celebration</p>
-        <h2 data-bind="hero.heroDate">23 December 2026</h2>
-      </div>
-
-      <div class="detail-stack reveal-stagger">
-        <article class="detail-card parallax-layer" data-speed="0.025">
-          <div class="detail-icon moon-icon" aria-hidden="true"></div>
-          <div class="detail-copy">
-            <p>When</p>
-            <!-- Both derived from the first and last entries in config.schedule. -->
-            <h3 id="whenPrimary">23 Dec, 7:00 AM onwards</h3>
-            <small id="whenSpan">through 24 Dec, 10:00 AM</small>
-          </div>
-        </article>
-        <article class="detail-card parallax-layer" data-speed="0.035">
-          <div class="detail-icon palace-icon" aria-hidden="true"></div>
-          <div class="detail-copy">
-            <p>Venue</p>
-            <h3 data-bind="venues.0.name">Greenland Resort</h3>
-            <small data-bind="venues.0.address">Patia, Bhubaneshwar</small>
-          </div>
-        </article>
-      </div>
-    </section>
 
     <section class="section schedule" id="schedule">
       <div class="floating-mandala parallax-layer" data-speed="0.12" aria-hidden="true"></div>
@@ -284,12 +241,15 @@
       <div class="final-garland" aria-hidden="true"></div>
       <div class="rsvp-inner reveal">
         <p class="label">RSVP</p>
-        <h2>Celebrate with us</h2>
-        <p>We would be delighted to have you with us for this beautiful beginning.</p>
+        <h2 id="rsvpHeading">Celebrate with us</h2>
+        <p id="rsvpMessage">We would be delighted to have you with us for this beautiful beginning.</p>
 
-        <!-- href, name and relation all come from config.rsvp. -->
+        <!-- Every part of this block comes from config.rsvp: the number, the
+             contact's name and relation, and all three pieces of wording. -->
         <a class="mail-btn" id="rsvpBtn" href="sms:+917978166436">
-          Send RSVP &mdash; <span id="rsvpContactName">AVN Sridhar Kumar</span>
+          <span id="rsvpButtonLabel">Send RSVP</span>
+          <span aria-hidden="true">&mdash;</span>
+          <span id="rsvpContactName">AVN Sridhar Kumar</span>
         </a>
         <a class="ghost-btn rsvp-call-btn" id="rsvpCallBtn" href="tel:+917978166436">Call instead</a>
         <p class="rsvp-contact-note" id="rsvpContactRelation">Bride&rsquo;s Father</p>
@@ -297,7 +257,29 @@
         <p class="closing-script">See you under the flowers and lights.</p>
       </div>
     </section>
+
+    <!-- Names come from config.json's bestCompliments.names. Starts hidden so it
+         never flashes an empty heading, and removes itself if the list is empty. -->
+    <section class="section compliments" id="compliments" hidden>
+      <div class="side-bloom side-bloom-left parallax-layer" data-speed="0.16" aria-hidden="true"></div>
+      <div class="section-heading reveal">
+        <p class="label">With</p>
+        <h2 id="complimentsHeading" data-bind="bestCompliments.heading">Best Compliments From</h2>
+        <div class="gold-rule" aria-hidden="true"><span></span></div>
+      </div>
+      <ul class="compliments-list reveal" id="complimentsList"><!-- built by script.js --></ul>
+    </section>
   </main>
+
+  <!-- Persistent scroll indicator. The ring doubles as a progress meter, and at
+       the bottom of the page it becomes back-to-top. No text by design. -->
+  <button class="scroll-cue" id="scrollCue" type="button" aria-label="Scroll to the next section">
+    <svg class="scroll-cue-ring" viewBox="0 0 46 46" aria-hidden="true" focusable="false">
+      <circle class="scroll-cue-track"></circle>
+      <circle class="scroll-cue-bar" id="scrollCueBar"></circle>
+    </svg>
+    <span class="scroll-cue-chevron" aria-hidden="true"></span>
+  </button>
 
   <button class="music-pill" id="musicPill" type="button" aria-label="Toggle background music">
     <span class="equalizer"><i></i><i></i><i></i></span>

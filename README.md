@@ -14,25 +14,81 @@ This is the **bride-side** site; the groom-side one shares this codebase and swa
 
 ---
 
-## Adding photos — the thing you'll do most
+## Adding a photo — the thing you'll do most
+
+### The three steps
 
 ```sh
-# 1. Drop photos (JPG / PNG / HEIC / HEIF / TIFF / WebP) into photos/originals/
-# 2. Optimise them:
+# 1. Copy the photo into the originals folder. Straight off the camera or phone
+#    is fine — JPG, PNG, HEIC, HEIF, TIFF and WebP all work. Do NOT resize,
+#    convert or rotate it first; the script does all of that.
+cp ~/Desktop/haldi-morning-01.jpg photos/originals/
+
+# 2. Convert and optimise. Takes a second or two per photo.
 npm run photos
-# 3. Write captions in photos/photos.json
+
+# 3. Open photos/photos.json and write the caption for the new entry,
+#    then commit and push.
 ```
 
-That's it. Full details, including what's safe to edit and how to reorder or remove photos, are in
+**Name the file before you copy it in.** The filename becomes the caption key, so
+`haldi-morning-01.jpg` gives you `haldi-morning-01` in the JSON — far easier to find than
+`IMG_4821`. Use lowercase, dashes instead of spaces.
+
+### What "optimise" actually does
+
+Each original becomes **WebP**, the format the site serves. WebP is roughly 30% smaller than JPEG
+at the same quality and every current browser supports it. For each photo the script writes:
+
+| Output | Purpose |
+|---|---|
+| `<name>-640.webp` | phones |
+| `<name>-1024.webp` | large phones and tablets |
+| `<name>-1600.webp` | desktop, and the full-screen viewer |
+| `<name>-lqip.webp` | 24px blur placeholder, inlined into the JSON as a data URI |
+
+The browser picks whichever size fits the screen via `srcset`, so a phone never downloads the
+1600px file. Your 11 photos went from **166 MB of originals to 3.9 MB of WebP** this way.
+
+It also:
+- **rotates photos upright** — cameras store rotation as an EXIF flag rather than rotating pixels,
+  and WebP encoders drop that flag, so without this a portrait shot ships sideways;
+- **strips all EXIF metadata**, including the GPS coordinates phones bake in.
+
+### Which folder?
+
+`gallery.photosDir` in `config.json` (default `photos`). The bride and groom repos can point at
+different folders while running identical code. Whatever you set, the script expects
+`<photosDir>/originals/` and writes `<photosDir>/optimized/` and `<photosDir>/photos.json`.
+
+### Removing or reordering
+
+Reorder the `photos` array in `photos.json` — that's the order guests see. To remove a photo,
+delete it from `originals/` and re-run; the entry is marked `"missing": true` rather than deleted,
+so a caption you wrote is never silently lost.
+
+### Requirements, and what to do on Windows/Linux
+
+Needs `cwebp` and macOS's built-in `sips`:
+
+```sh
+brew install webp
+```
+
+This script is macOS-only because of `sips`. Elsewhere, convert manually and skip step 2:
+
+1. Convert to WebP with [Squoosh](https://squoosh.app) (drag in, pick WebP, quality ~80, resize
+   the longest edge to 1600px).
+2. Save as `photos/optimized/<name>-1600.webp`.
+3. Add an entry to `photos.json` by hand, copying the shape of an existing one. `srcset` and
+   `lqip` are optional — with a single size, set `src`, `full`, `width` and `height` and leave
+   `srcset` as just that one file.
+
+Full detail, including the merge guarantees that stop a re-run overwriting your captions, is in
 **[`photos/README.md`](photos/README.md)**.
 
 The gallery section **hides itself while there are no photos**, so nothing looks broken to guests
 while you're still adding them.
-
-Name files meaningfully before dropping them in — `haldi-morning-01.jpg` becomes the caption key
-`haldi-morning-01`, which beats hunting for `IMG_4821`.
-
-Needs `cwebp` (`brew install webp`) and macOS's built-in `sips`.
 
 ---
 
@@ -43,8 +99,8 @@ Only two things differ:
 
 | | |
 |---|---|
-| `config.json` | names, parents, schedule, venues, RSVP contact, best-compliments list |
-| `photos/` | the pictures for that side |
+| `config.json` | names, parents, schedule, venues, RSVP wording + number, best-compliments list, which photo folder to use |
+| the photo folder | the pictures for that side (named by `gallery.photosDir`) |
 
 This repo holds the **bride-side** config. To spin up the groom side: copy the repo, swap
 `config.json`, drop in that side's photos, run `npm run build`, and update the three absolute
@@ -61,6 +117,10 @@ file fails to load the page still reads correctly — it just shows this side's 
   is empty the whole section removes itself.
 - Schedule entries are grouped by their `date` field, so a multi-day running order renders with
   one heading per day.
+- The whole RSVP block is config-driven — `heading`, `message`, `buttonLabel`, `callLabel`,
+  `contactName`, `contactRelation`, `phone` and an optional `smsBody` to prefill the message.
+  Remove `phone` and the RSVP buttons remove themselves rather than linking nowhere.
+- `gallery.photosDir` picks the photo folder, so the two sides never share pictures.
 
 After editing the schedule in `config.json`, run:
 
@@ -150,6 +210,8 @@ assets/                 couple photo, music, calendar file, icons, share image
 | Fonts | the four `--font-*` custom properties in `:root` in `styles.css` |
 | Colours | the palette custom properties at the top of `styles.css` |
 | Gallery heading | `gallery.heading` in `config.json` |
+| RSVP wording, number, contact | `rsvp` block in `config.json` |
+| Which photo folder is used | `gallery.photosDir` in `config.json` |
 | Length of the opening gate scroll | `.gate-scene { height }` in `styles.css` |
 | Countdown target | `countdownTarget` in `config.json` |
 
