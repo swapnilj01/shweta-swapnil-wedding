@@ -64,12 +64,17 @@
               <source srcset="assets/couple.webp" type="image/webp" />
               <img src="assets/couple.jpg" alt="Shweta and Swapnil standing together in traditional wedding attire" />
             </picture>
-            <div class="photo-caption">23 December 2026</div>
+            <div class="photo-caption" data-bind="hero.heroDate">23 December 2026</div>
           </div>
           <div class="hero-text reveal-on-open">
-            <p class="script-kicker">You are invited to celebrate</p>
-            <h1><span>Shweta</span><em>weds</em><span>Swapnil</span></h1>
-            <p class="hero-copy">Be a part of two souls witnessing the start of their forever journey.</p>
+            <p class="script-kicker" data-bind="hero.kicker">You are invited to celebrate</p>
+            <h1><span data-bind="couple.top.name">Shweta</span><em>weds</em><span data-bind="couple.bottom.name">Swapnil</span></h1>
+            <p class="hero-copy" data-bind="hero.tagline">Be a part of two souls witnessing the start of their forever journey.</p>
+
+            <div class="scroll-cue" id="scrollCue" aria-hidden="true">
+              <span class="scroll-cue-chevron"></span>
+              <small>Scroll for the details</small>
+            </div>
           </div>
         </div>
 
@@ -113,26 +118,38 @@
 
       <div class="family-pair reveal-stagger">
         <article class="glass-card family-card">
-          <p class="family-name">Shweta</p>
-          <p class="family-relation">Daughter of</p>
-          <p class="family-parents">Mr. AVN Sridhar Kumar<br /><span>&amp;</span><br />Mrs. C Jyoti</p>
+          <p class="family-name" data-bind="couple.top.name">Shweta</p>
+          <p class="family-relation" data-bind="couple.top.relation">Daughter of</p>
+          <p class="family-parents" data-bind="couple.top.parents" data-bind-amp>Mr. AVN Sridhar Kumar<br /><span>&amp;</span><br />Mrs. C Jyoti</p>
         </article>
 
         <div class="family-join" aria-hidden="true"><span>weds</span></div>
 
         <article class="glass-card family-card">
-          <p class="family-name">Swapnil</p>
-          <p class="family-relation">Son of</p>
-          <p class="family-parents">Dr. Shyamakant Jena<br /><span>&amp;</span><br />Mrs. Sunanda Jena</p>
+          <p class="family-name" data-bind="couple.bottom.name">Swapnil</p>
+          <p class="family-relation" data-bind="couple.bottom.relation">Son of</p>
+          <p class="family-parents" data-bind="couple.bottom.parents" data-bind-amp>Dr. Shyamakant Jena<br /><span>&amp;</span><br />Mrs. Sunanda Jena</p>
         </article>
       </div>
+    </section>
+
+    <!-- Names come from config.json's bestCompliments.names. Starts hidden so it
+         never flashes an empty heading, and removes itself if the list is empty. -->
+    <section class="section compliments" id="compliments" hidden>
+      <div class="side-bloom side-bloom-left parallax-layer" data-speed="0.16" aria-hidden="true"></div>
+      <div class="section-heading reveal">
+        <p class="label">With</p>
+        <h2 id="complimentsHeading" data-bind="bestCompliments.heading">Best Compliments From</h2>
+        <div class="gold-rule" aria-hidden="true"><span></span></div>
+      </div>
+      <ul class="compliments-list reveal" id="complimentsList"><!-- built by script.js --></ul>
     </section>
 
     <section class="section details" id="details">
       <div class="floating-mandala parallax-layer" data-speed="0.16" aria-hidden="true"></div>
       <div class="section-heading reveal">
         <p class="label">The celebration</p>
-        <h2>23 December 2026</h2>
+        <h2 data-bind="hero.heroDate">23 December 2026</h2>
       </div>
 
       <div class="detail-stack reveal-stagger">
@@ -140,23 +157,17 @@
           <div class="detail-icon moon-icon" aria-hidden="true"></div>
           <div class="detail-copy">
             <p>When</p>
-            <h3>23 December, 11 PM</h3>
-            <small>Celebrations from 6 PM</small>
+            <!-- Both derived from the first and last entries in config.schedule. -->
+            <h3 id="whenPrimary">23 Dec, 7:00 AM onwards</h3>
+            <small id="whenSpan">through 24 Dec, 10:00 AM</small>
           </div>
         </article>
         <article class="detail-card parallax-layer" data-speed="0.035">
           <div class="detail-icon palace-icon" aria-hidden="true"></div>
           <div class="detail-copy">
             <p>Venue</p>
-            <h3>Greenland Resort</h3>
-            <small>Patia, Bhubaneshwar</small>
-          </div>
-        </article>
-        <article class="detail-card parallax-layer" data-speed="0.045">
-          <div class="detail-icon attire-icon" aria-hidden="true"></div>
-          <div class="detail-copy">
-            <p>Dress code</p>
-            <h3>Traditional Indian attire</h3>
+            <h3 data-bind="venues.0.name">Greenland Resort</h3>
+            <small data-bind="venues.0.address">Patia, Bhubaneshwar</small>
           </div>
         </article>
       </div>
@@ -165,41 +176,49 @@
     <section class="section schedule" id="schedule">
       <div class="floating-mandala parallax-layer" data-speed="0.12" aria-hidden="true"></div>
       <div class="section-heading reveal">
-        <p class="label">Order of the evening</p>
+        <p class="label">Order of events</p>
         <h2>The celebrations</h2>
         <div class="gold-rule" aria-hidden="true"><span></span></div>
       </div>
 
-      <ol class="timeline reveal-stagger">
-        <li class="timeline-item">
-          <p class="timeline-time"><time datetime="2026-12-23T18:00+05:30">6:00 PM</time></p>
-          <div class="timeline-copy">
-            <h3>Baraati</h3>
-            <p>The groom&rsquo;s procession arrives</p>
-          </div>
-        </li>
-        <li class="timeline-item">
-          <p class="timeline-time"><time datetime="2026-12-23T19:00+05:30">7:00 PM</time></p>
-          <div class="timeline-copy">
-            <h3>Reception</h3>
-            <p>Dinner, greetings and photographs</p>
-          </div>
-        </li>
-        <li class="timeline-item">
-          <p class="timeline-time"><time datetime="2026-12-23T23:00+05:30">11:00 PM</time></p>
-          <div class="timeline-copy">
-            <h3>Wedding</h3>
-            <p>The ceremony begins, and continues through the night</p>
-          </div>
-        </li>
-        <li class="timeline-item">
-          <p class="timeline-time"><time datetime="2026-12-24T04:10+05:30">4:10 AM</time><small>24 Dec</small></p>
-          <div class="timeline-copy">
-            <h3>Hastagranthi</h3>
-            <p>The joining of hands, at the auspicious hour</p>
-          </div>
-        </li>
-      </ol>
+      <!-- Rebuilt from config.schedule, grouped by day. The markup below is the
+           fallback shown if config.json fails to load. -->
+      <div class="schedule-days reveal" id="scheduleDays">
+        <section class="schedule-day">
+          <h3 class="schedule-day-label">23 December</h3>
+          <ol class="timeline">
+            <li class="timeline-item">
+              <p class="timeline-time"><time datetime="2026-12-23T07:00+05:30">7:00 AM</time></p>
+              <div class="timeline-copy"><h3>Snaatakalu</h3></div>
+            </li>
+            <li class="timeline-item">
+              <p class="timeline-time"><time datetime="2026-12-23T11:00+05:30">11:00 AM</time></p>
+              <div class="timeline-copy"><h3>Haldi Carnival</h3></div>
+            </li>
+            <li class="timeline-item">
+              <p class="timeline-time"><time datetime="2026-12-23T17:00+05:30">5:00 PM</time></p>
+              <div class="timeline-copy"><h3>Edrukolu (Varmala)</h3></div>
+            </li>
+            <li class="timeline-item">
+              <p class="timeline-time"><time datetime="2026-12-23T23:00+05:30">11:00 PM</time></p>
+              <div class="timeline-copy"><h3>Wedding</h3><p class="timeline-venue">Greenland Resort</p></div>
+            </li>
+          </ol>
+        </section>
+        <section class="schedule-day">
+          <h3 class="schedule-day-label">24 December</h3>
+          <ol class="timeline">
+            <li class="timeline-item">
+              <p class="timeline-time"><time datetime="2026-12-24T04:10+05:30">4:10 AM</time></p>
+              <div class="timeline-copy"><h3>Hastagranthi</h3><p class="timeline-venue">Greenland Resort</p></div>
+            </li>
+            <li class="timeline-item">
+              <p class="timeline-time"><time datetime="2026-12-24T10:00+05:30">10:00 AM</time></p>
+              <div class="timeline-copy"><h3>Vidai</h3></div>
+            </li>
+          </ol>
+        </section>
+      </div>
     </section>
 
     <section class="section countdown" id="countdown">
@@ -216,32 +235,26 @@
       </article>
     </section>
 
-    <section class="section photo-story" id="photo-story">
-      <div class="story-flower parallax-layer" data-speed="0.20" aria-hidden="true"></div>
-      <div class="story-card reveal">
-        <picture>
-          <source srcset="assets/couple.webp" type="image/webp" />
-          <img src="assets/couple.jpg" alt="Shweta and Swapnil" />
-        </picture>
-        <div class="story-copy">
-          <p class="script-kicker">Under flowers, lights and blessings</p>
-          <h2>A night to remember</h2>
-          <p>Join us for an evening wrapped in temple warmth, South Indian florals, glowing diyas, and the joy of two hearts beginning a new chapter.</p>
-        </div>
-      </div>
-    </section>
-
+    <!-- One card per entry in config.venues — the bride side has one, the groom
+         side has three, so this renders however many the config provides. -->
     <section class="section venue" id="venue">
       <div class="map-ornament parallax-layer" data-speed="0.19" aria-hidden="true"></div>
-      <article class="glass-card reveal">
+      <div class="section-heading reveal">
         <p class="label">Join us at</p>
-        <h2>Greenland Resort</h2>
-        <p class="venue-address">Patia, Bhubaneshwar</p>
-        <div class="cta-row">
+        <h2 id="venueHeading">Greenland Resort</h2>
+      </div>
+
+      <div class="venue-list reveal-stagger" id="venueList">
+        <article class="glass-card venue-card">
+          <p class="venue-address">Patia, Bhubaneshwar</p>
+          <p class="venue-note">Wedding, 23 Dec 11 PM &middot; Hastagranthi, 24 Dec 4:10 AM</p>
           <a class="primary-btn" href="https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" target="_blank" rel="noreferrer">Open Google Maps</a>
-          <a class="ghost-btn" href="assets/shweta-swapnil-wedding.ics" download>Add to Calendar</a>
-        </div>
-      </article>
+        </article>
+      </div>
+
+      <div class="venue-cta reveal">
+        <a class="ghost-btn" href="assets/shweta-swapnil-wedding.ics" download>Add all events to calendar</a>
+      </div>
     </section>
 
     <!-- Gallery. Populated from photos/photos.json by script.js.
@@ -273,7 +286,14 @@
         <p class="label">RSVP</p>
         <h2>Celebrate with us</h2>
         <p>We would be delighted to have you with us for this beautiful beginning.</p>
-        <a class="mail-btn" href="mailto:swapniljena0@gmail.com?subject=RSVP%20for%20Shweta%20and%20Swapnil%27s%20Wedding">swapniljena0@gmail.com</a>
+
+        <!-- href, name and relation all come from config.rsvp. -->
+        <a class="mail-btn" id="rsvpBtn" href="sms:+917978166436">
+          Send RSVP &mdash; <span id="rsvpContactName">AVN Sridhar Kumar</span>
+        </a>
+        <a class="ghost-btn rsvp-call-btn" id="rsvpCallBtn" href="tel:+917978166436">Call instead</a>
+        <p class="rsvp-contact-note" id="rsvpContactRelation">Bride&rsquo;s Father</p>
+
         <p class="closing-script">See you under the flowers and lights.</p>
       </div>
     </section>

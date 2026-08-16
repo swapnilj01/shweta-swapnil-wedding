@@ -1,12 +1,14 @@
 # Shweta weds Swapnil — wedding invitation
 
-A mobile-first, GitHub Pages-ready wedding invitation for **23 December 2026, 8 PM IST** at
-Greenland Resort, Patia, Bhubaneshwar.
+A mobile-first, GitHub Pages-ready wedding invitation. Celebrations run **23–24 December 2026**,
+with the wedding at **11 PM on 23 December** at Greenland Resort, Patia, Bhubaneshwar.
+
+This is the **bride-side** site; the groom-side one shares this codebase and swaps `config.json`.
 
 - Scroll-driven gate-opening intro, floating petals, diyas, jasmine garlands and florals
 - Countdown to the muhurta
 - Horizontally scrollable photo gallery with captions, and a tap-to-zoom viewer
-- Google Maps link, calendar download, RSVP email
+- Multi-day running order, per-venue maps, calendar download, RSVP by SMS or call
 - Instrumental background music
 - Works fully offline of any CDN — every library is vendored in `vendor/`
 
@@ -34,6 +36,38 @@ Needs `cwebp` (`brew install webp`) and macOS's built-in `sips`.
 
 ---
 
+## Two repos, one codebase
+
+The bride-side and groom-side sites run **identical** `index.html`, `styles.css` and `script.js`.
+Only two things differ:
+
+| | |
+|---|---|
+| `config.json` | names, parents, schedule, venues, RSVP contact, best-compliments list |
+| `photos/` | the pictures for that side |
+
+This repo holds the **bride-side** config. To spin up the groom side: copy the repo, swap
+`config.json`, drop in that side's photos, run `npm run build`, and update the three absolute
+URLs described below.
+
+Every value in `config.json` also exists as hardcoded fallback text in `index.html`, so if the
+file fails to load the page still reads correctly — it just shows this side's defaults.
+
+**Conventions worth knowing:**
+- `venues[0]` is treated as the headline venue for the summary card, so put the main one first.
+- With exactly one venue, its name becomes the section heading and is omitted from the card, so
+  it isn't printed twice.
+- `bestCompliments.names` currently holds placeholders (`Name 1`…). **Replace them** — if the list
+  is empty the whole section removes itself.
+- Schedule entries are grouped by their `date` field, so a multi-day running order renders with
+  one heading per day.
+
+After editing the schedule in `config.json`, run:
+
+```sh
+npm run calendar     # regenerates assets/*.ics — one VEVENT per event
+```
+
 ## Before you publish — one required edit
 
 Link previews on WhatsApp, iMessage and Facebook **ignore relative image paths**. So the two
@@ -45,9 +79,9 @@ absolute URLs near the top of `index.html` must point at your real address:
 <meta property="og:image" content="https://<username>.github.io/shweta-swapnil-wedding/assets/og-cover.jpg" />
 ```
 
-They're marked with a `SITE_URL` comment block so they're easy to find. Currently they guess
-`swapniljena.github.io` — **change it if that's not your username**, or the shared link will show
-no picture.
+They're marked with a `SITE_URL` comment block so they're easy to find. This repo is already set
+to `swapnilj01.github.io/shweta-swapnil-wedding`. **The groom-side repo needs all three changed**
+to its own URL, or its shared link will show this site's picture.
 
 Test the result at [WhatsApp's link preview debugger](https://developers.facebook.com/tools/debug/)
 once the site is live.
@@ -100,7 +134,9 @@ photos/
   optimized/            generated WebP (committed; the site serves these)
   photos.json           <- you write captions here
   README.md             the photo workflow in detail
-tools/build-photos.mjs  the optimiser (no npm dependencies)
+config.json             <- everything that differs between the two repos
+tools/build-photos.mjs  the photo optimiser (no npm dependencies)
+tools/build-calendar.mjs generates the .ics from config.json
 vendor/                 Swiper + GSAP, checked in on purpose. See vendor/README.md
 assets/                 couple photo, music, calendar file, icons, share image
 ```
@@ -109,12 +145,13 @@ assets/                 couple photo, music, calendar file, icons, share image
 
 | To change | Edit |
 |---|---|
-| Names, date, venue, map link, RSVP address | `index.html` |
+| Names, parents, schedule, venues, RSVP contact | `config.json` (then `npm run calendar`) |
+| Best-compliments names | `bestCompliments.names` in `config.json` |
 | Fonts | the four `--font-*` custom properties in `:root` in `styles.css` |
 | Colours | the palette custom properties at the top of `styles.css` |
-| Gallery heading | `heading` in `photos/photos.json` |
+| Gallery heading | `gallery.heading` in `config.json` |
 | Length of the opening gate scroll | `.gate-scene { height }` in `styles.css` |
-| Countdown target | the date string in `script.js` (and `assets/*.ics`) |
+| Countdown target | `countdownTarget` in `config.json` |
 
 ## Notes
 

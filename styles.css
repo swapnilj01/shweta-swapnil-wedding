@@ -514,7 +514,7 @@ h1 em {
   padding: 88px 18px;
   overflow: hidden;
 }
-.glass-card, .story-card, .detail-card {
+.glass-card, .detail-card {
   width: min(100%, 440px);
   position: relative;
   border: 1px solid rgba(255, 230, 169, .34);
@@ -542,7 +542,7 @@ h2 {
   letter-spacing: .012em;
   color: #650c22;
 }
-.invitation-text, .venue-address, .rsvp-inner p, .story-copy p {
+.invitation-text, .venue-address, .rsvp-inner p {
   font-size: clamp(18px, 4.4vw, 21px);
   line-height: 1.55;
 }
@@ -583,7 +583,7 @@ h2 {
 .gold-rule span::before { left: 50%; margin-left: -17px; }
 .gold-rule span::after { right: 50%; margin-right: -17px; }
 
-.side-bloom, .story-flower, .map-ornament, .floating-mandala, .countdown-bg {
+.side-bloom, .map-ornament, .floating-mandala, .countdown-bg {
   position: absolute;
   pointer-events: none;
 }
@@ -674,14 +674,6 @@ h2 {
   border-right: 10px solid transparent;
   border-bottom: 14px solid var(--maroon);
 }
-.attire-icon::before {
-  content: '';
-  position: absolute;
-  inset: 15px;
-  border-radius: 18px 3px 18px 3px;
-  background: linear-gradient(45deg, var(--green) 0 47%, var(--maroon) 48% 100%);
-  transform: rotate(44deg);
-}
 .detail-copy { position: relative; z-index: 1; min-width: 0; }
 .detail-copy p {
   margin: 0 0 8px;
@@ -765,45 +757,54 @@ h2 {
   color: #a76516;
 }
 
-.photo-story { padding-inline: 18px; }
-.story-card {
-  overflow: hidden;
-  padding: 10px;
-  background:
-    linear-gradient(145deg, rgba(255, 248, 230, .96), rgba(255, 232, 211, .88)),
-    radial-gradient(circle at 80% 10%, rgba(255, 197, 109, .35), transparent 8rem);
+.venue {
+  align-content: center;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
 }
-.story-card picture { display: block; }
-.story-card img {
-  width: 100%;
-  aspect-ratio: 3/3.8;
-  object-fit: cover;
-  object-position: center 44%;
-  border-radius: 26px 26px 10px 10px;
-  display: block;
-}
-.story-copy {
-  padding: 24px 16px 20px;
-  text-align: center;
-  color: #5d2631;
-}
-.story-copy .script-kicker { color: #b66e20; font-size: clamp(32px, 10vw, 54px); }
-.story-copy h2 { margin-top: 4px; }
-.story-copy p:last-child { margin: 14px 0 0; }
-.story-flower {
-  width: 250px;
-  height: 250px;
-  left: -128px;
-  top: 16%;
-  opacity: .45;
-  border-radius: 50%;
-  background:
-    repeating-conic-gradient(from 20deg, rgba(255,151,161,.8) 0 18deg, rgba(247,198,109,.75) 18deg 30deg, transparent 30deg 42deg),
-    radial-gradient(circle, rgba(255,246,214,.9) 0 8%, transparent 9%);
-  animation: slowSpin 28s linear infinite reverse;
-}
-
 .venue .glass-card { padding-bottom: 28px; }
+.venue-list {
+  width: min(100%, 440px);
+  margin: 0 auto;
+  display: grid;
+  gap: 14px;
+}
+.venue-card {
+  width: 100%;
+  padding: 26px 22px;
+  text-align: center;
+}
+.venue-card h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(27px, 6.6vw, 36px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: .01em;
+  color: #650c22;
+}
+.venue-card .venue-address { margin: 8px 0 0; }
+.venue-note {
+  margin: 10px 0 0;
+  font: 500 10px/1.5 var(--font-ui);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: #a76516;
+}
+.venue-card .primary-btn { margin-top: 18px; width: 100%; }
+.venue-cta {
+  width: min(100%, 440px);
+  margin: 0 auto;
+  display: grid;
+}
+/* .ghost-btn is designed to sit on a light card; on the dark section
+   background it needs the inverted treatment instead. */
+.venue-cta .ghost-btn {
+  background: rgba(255, 247, 230, .13);
+  border-color: rgba(255, 232, 169, .3);
+  color: #ffeec4;
+}
+.venue-card .venue-address { color: #67303d; }
 .venue-address { margin: 12px 0 24px; color: #67303d; }
 .cta-row {
   display: grid;
@@ -861,10 +862,28 @@ h2 {
 .mail-btn {
   width: min(100%, 360px);
   margin: 0 auto;
+  /* inline-flex trims whitespace between items, so "RSVP — Name" would render
+     as "RSVP —Name" without an explicit gap. */
+  gap: .34em;
+  flex-wrap: wrap;
   text-transform: none;
   letter-spacing: .02em;
   font-size: clamp(14px, 3.8vw, 16px);
   overflow-wrap: anywhere;
+}
+.rsvp-call-btn {
+  width: min(100%, 360px);
+  margin: 10px auto 0;
+  background: rgba(255, 247, 230, .13);
+  border-color: rgba(255, 232, 169, .3);
+  color: #ffeec4;
+}
+.rsvp-inner .rsvp-contact-note {
+  margin: 12px 0 0;
+  font: 500 10px/1 var(--font-ui);
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: rgba(255, 235, 197, .68);
 }
 .closing-script {
   display: block;
@@ -945,8 +964,50 @@ h2 {
   .hero-text { text-align: left; }
   h1 { text-align: left; }
   .cta-row { grid-template-columns: 1fr 1fr; }
-  .story-card { display: grid; grid-template-columns: .95fr 1fr; align-items: center; max-width: 850px; }
-  .story-card img { border-radius: 26px 10px 10px 26px; aspect-ratio: 3/4; }
+}
+
+/* ============================================================
+   Scroll cue
+
+   The "Scroll to open the gates" hint only covers the first screen, so this
+   sits under the hero copy and keeps nudging until the guest reaches the
+   families section.
+   ============================================================ */
+
+.scroll-cue {
+  margin-top: 28px;
+  text-align: center;
+  opacity: .85;
+  transition: opacity .4s ease;
+}
+.scroll-cue.is-hidden { opacity: 0; pointer-events: none; }
+.scroll-cue small {
+  display: block;
+  font: 500 9px/1 var(--font-ui);
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: rgba(255, 235, 197, .72);
+}
+.scroll-cue-chevron {
+  display: block;
+  width: 14px;
+  height: 14px;
+  /* Rotating 45deg pushes the lower corner ~3px past the 14px box, and the bob
+     animation adds 6px more, so the label needs clearance below it. */
+  margin: 0 auto 17px;
+  border-right: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  transform: rotate(45deg);
+  animation: chevronBob 1.6s ease-in-out infinite;
+}
+@keyframes chevronBob {
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50%      { transform: translateY(6px) rotate(45deg); }
+}
+/* The hero is centred on mobile but left-aligned from 720px up. */
+@media (min-width: 720px) {
+  .scroll-cue { text-align: left; }
+  .scroll-cue-chevron { margin-left: 0; }
 }
 
 /* ============================================================
@@ -1030,8 +1091,74 @@ h2 {
 }
 
 /* ============================================================
+   Best compliments
+   ============================================================ */
+
+.compliments {
+  align-content: center;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1fr);
+  background:
+    radial-gradient(circle at 14% 80%, rgba(255, 220, 148, .08), transparent 14rem),
+    linear-gradient(180deg, rgba(37, 4, 13, .16), rgba(37, 4, 13, .34));
+}
+.compliments[hidden] { display: none; }
+.compliments-list {
+  width: min(100%, 460px);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: clamp(18px, 4.6vw, 21px);
+  line-height: 1.35;
+  color: #fff3d6;
+}
+.compliments-list li { position: relative; }
+/* A small gold diamond between names, echoing the gold rule. */
+.compliments-list li + li::before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 0 auto 12px;
+  transform: rotate(45deg);
+  background: rgba(247, 198, 109, .5);
+}
+
+/* ============================================================
    Schedule
    ============================================================ */
+
+.schedule-days {
+  width: min(100%, 440px);
+  margin: 0 auto;
+  display: grid;
+  gap: 30px;
+}
+.schedule-day-label {
+  margin: 0 0 16px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgba(247, 198, 109, .22);
+  font: 500 11px/1 var(--font-ui);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: #ffe7aa;
+}
+/* Two classes so this outranks `.timeline-copy p` without needing !important. */
+.timeline-copy .timeline-venue {
+  margin: 6px 0 0;
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255, 231, 170, .62);
+}
+.timeline-copy .timeline-venue a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 
 .schedule {
   align-content: center;
@@ -1449,16 +1576,14 @@ body.lightbox-open { overflow: hidden; }
 /* backdrop-filter is the most expensive thing on this page and it sits behind
    an almost-opaque gradient, so on phones it costs a lot to be invisible. */
 @media (max-width: 719px) {
-  .glass-card, .story-card, .detail-card, .photo-card { backdrop-filter: none; }
+  .glass-card, .detail-card, .photo-card { backdrop-filter: none; }
 }
 
-/* Let the browser skip layout and paint for sections that are far offscreen.
-   contain-intrinsic-size keeps the scrollbar from jumping while they're skipped. */
-.section.gallery, .section.venue, .section.rsvp, .section.photo-story,
-.section.families, .section.schedule {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 100svh;
-}
+/* NB: there was a `content-visibility: auto` rule here. It skipped rendering
+   offscreen sections, which raced ScrollTrigger's cached position measurements:
+   a section could get its reveal class while still unrendered, so it only
+   appeared after scrolling past and back. Removed — the page is small enough
+   (images already lazy-load) that the optimisation wasn't worth the bug. */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }

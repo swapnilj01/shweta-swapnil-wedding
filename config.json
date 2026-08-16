@@ -1,0 +1,43 @@
+{
+  "_comment": "Bride-side configuration. This file and the photos/ folder are the ONLY things that differ between the bride and groom repos — the HTML, CSS and JS are identical. Every value here has a matching fallback hardcoded in index.html, so the page still reads correctly if this file fails to load. Note: venues[0] is treated as the headline venue for the summary card, so put the main one first.",
+  "side": "bride",
+  "couple": {
+    "top": { "name": "Shweta", "relation": "Daughter of", "parents": "Mr. AVN Sridhar Kumar & Mrs. C Jyoti" },
+    "bottom": { "name": "Swapnil", "relation": "Son of", "parents": "Dr. Shyamakant Jena & Mrs. Sunanda Jena" }
+  },
+  "hero": {
+    "kicker": "You are invited to celebrate",
+    "tagline": "Be a part of two souls witnessing the start of their forever journey.",
+    "heroDate": "23 December 2026"
+  },
+  "countdownTarget": "2026-12-23T07:00:00+05:30",
+  "schedule": [
+    { "date": "23 Dec", "time": "7:00 AM",  "iso": "2026-12-23T07:00:00+05:30", "title": "Snaatakalu",         "venueName": "", "mapsUrl": "" },
+    { "date": "23 Dec", "time": "11:00 AM", "iso": "2026-12-23T11:00:00+05:30", "title": "Haldi Carnival",     "venueName": "", "mapsUrl": "" },
+    { "date": "23 Dec", "time": "5:00 PM",  "iso": "2026-12-23T17:00:00+05:30", "title": "Edrukolu (Varmala)", "venueName": "", "mapsUrl": "" },
+    { "date": "23 Dec", "time": "11:00 PM", "iso": "2026-12-23T23:00:00+05:30", "title": "Wedding",            "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
+    { "date": "24 Dec", "time": "4:10 AM",  "iso": "2026-12-24T04:10:00+05:30", "title": "Hastagranthi",       "venueName": "Greenland Resort", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" },
+    { "date": "24 Dec", "time": "10:00 AM", "iso": "2026-12-24T10:00:00+05:30", "title": "Vidai",              "venueName": "", "mapsUrl": "" }
+  ],
+  "venues": [
+    { "name": "Greenland Resort", "address": "Patia, Bhubaneshwar", "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48", "note": "Wedding, 23 Dec 11 PM · Hastagranthi, 24 Dec 4:10 AM" }
+  ],
+  "bestCompliments": {
+    "heading": "Best Compliments From",
+    "names": ["Name 1", "Name 2", "Name 3"]
+  },
+  "rsvp": {
+    "contactName": "AVN Sridhar Kumar",
+    "contactRelation": "Bride's Father",
+    "phone": "+917978166436"
+  },
+  "gallery": {
+    "photosJson": "photos/photos.json",
+    "heading": "If you missed the events so far, here are some snaps to glance over"
+  },
+  "assets": {
+    "couplePhotoJpg": "assets/couple.jpg",
+    "couplePhotoWebp": "assets/couple.webp",
+    "music": "assets/romantic-instrumental.m4a"
+  }
+}

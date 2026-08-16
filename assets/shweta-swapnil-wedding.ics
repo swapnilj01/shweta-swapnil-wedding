@@ -3,22 +3,59 @@ VERSION:2.0
 PRODID:-//Shweta Swapnil Wedding//Wedding Invite//EN
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
+X-WR-CALNAME:Shweta weds Swapnil
 BEGIN:VEVENT
-UID:shweta-swapnil-wedding-20261223@github-pages
+UID:bride-20261223T070000-snaatakalu@shweta-swapnil-wedding
 DTSTAMP:20260715T000000Z
-DTSTART;TZID=Asia/Kolkata:20261223T180000
-DTEND;TZID=Asia/Kolkata:20261224T060000
-SUMMARY:Shweta weds Swapnil
-LOCATION:Greenland Resort\, Patia\, Bhubaneshwar
-DESCRIPTION:Wedding celebration of Shweta and Swapnil.\n\nBaraati 6:00 PM\nReception 7:00 PM\nWedding 11:00 PM onwards\nHastagranthi 4:10 AM on 24 December\n\nDress code: Traditional Indian attire\nRSVP: swapniljena0@gmail.com
+DTSTART;TZID=Asia/Kolkata:20261223T070000
+DTEND;TZID=Asia/Kolkata:20261223T110000
+SUMMARY:Snaatakalu — Shweta weds Swapnil
+DESCRIPTION:RSVP: AVN Sridhar Kumar (Bride's Father) +917978166436
 END:VEVENT
 BEGIN:VEVENT
-UID:shweta-swapnil-hastagranthi-20261224@github-pages
+UID:bride-20261223T110000-haldi-carnival@shweta-swapnil-wedding
+DTSTAMP:20260715T000000Z
+DTSTART;TZID=Asia/Kolkata:20261223T110000
+DTEND;TZID=Asia/Kolkata:20261223T170000
+SUMMARY:Haldi Carnival — Shweta weds Swapnil
+DESCRIPTION:RSVP: AVN Sridhar Kumar (Bride's Father) +917978166436
+END:VEVENT
+BEGIN:VEVENT
+UID:bride-20261223T170000-edrukolu-varmala@shweta-swapnil-wedding
+DTSTAMP:20260715T000000Z
+DTSTART;TZID=Asia/Kolkata:20261223T170000
+DTEND;TZID=Asia/Kolkata:20261223T230000
+SUMMARY:Edrukolu (Varmala) — Shweta weds Swapnil
+DESCRIPTION:RSVP: AVN Sridhar Kumar (Bride's Father) +917978166436
+END:VEVENT
+BEGIN:VEVENT
+UID:bride-20261223T230000-wedding@shweta-swapnil-wedding
+DTSTAMP:20260715T000000Z
+DTSTART;TZID=Asia/Kolkata:20261223T230000
+DTEND;TZID=Asia/Kolkata:20261224T041000
+SUMMARY:Wedding — Shweta weds Swapnil
+LOCATION:Greenland Resort\, Patia\, Bhubaneshwar
+DESCRIPTION:Wedding\, 23 Dec 11 PM · Hastagranthi\, 24 Dec 4:10 AM\nMap: h
+ ttps://maps.app.goo.gl/hMzEbQEMX5zCqHz48\nRSVP: AVN Sridhar Kumar (Bride's
+  Father) +917978166436
+END:VEVENT
+BEGIN:VEVENT
+UID:bride-20261224T041000-hastagranthi@shweta-swapnil-wedding
 DTSTAMP:20260715T000000Z
 DTSTART;TZID=Asia/Kolkata:20261224T041000
-DTEND;TZID=Asia/Kolkata:20261224T054000
-SUMMARY:Hastagranthi - Shweta weds Swapnil
+DTEND;TZID=Asia/Kolkata:20261224T100000
+SUMMARY:Hastagranthi — Shweta weds Swapnil
 LOCATION:Greenland Resort\, Patia\, Bhubaneshwar
-DESCRIPTION:The joining of hands\, at the auspicious hour.
+DESCRIPTION:Wedding\, 23 Dec 11 PM · Hastagranthi\, 24 Dec 4:10 AM\nMap: h
+ ttps://maps.app.goo.gl/hMzEbQEMX5zCqHz48\nRSVP: AVN Sridhar Kumar (Bride's
+  Father) +917978166436
+END:VEVENT
+BEGIN:VEVENT
+UID:bride-20261224T100000-vidai@shweta-swapnil-wedding
+DTSTAMP:20260715T000000Z
+DTSTART;TZID=Asia/Kolkata:20261224T100000
+DTEND;TZID=Asia/Kolkata:20261224T113000
+SUMMARY:Vidai — Shweta weds Swapnil
+DESCRIPTION:RSVP: AVN Sridhar Kumar (Bride's Father) +917978166436
 END:VEVENT
 END:VCALENDAR

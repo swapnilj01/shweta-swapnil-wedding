@@ -1,8 +1,13 @@
 /**
  * Shweta weds Swapnil — invitation behaviour.
  *
- *   countdown · scroll choreography (GSAP ScrollTrigger) · falling petals
- *   photo gallery + lightbox (Swiper, fed by photos/photos.json) · background music
+ *   config.json binding · countdown · scroll choreography (GSAP ScrollTrigger)
+ *   falling petals · photo gallery + lightbox (Swiper) · background music
+ *
+ * The bride and groom repos share this file byte for byte; everything that
+ * differs between them lives in config.json and photos/. Every value config
+ * supplies also exists as hardcoded fallback text in index.html, so if
+ * config.json fails to load the page still reads correctly.
  *
  * GSAP and Swiper are vendored in vendor/ and loaded before this file. Every
  * feature here is optional: if a library is missing the page still renders and
@@ -22,13 +27,19 @@
 
   if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
 
+  /** Fallback used only when config.json is missing or has no countdownTarget. */
+  const DEFAULT_COUNTDOWN = '2026-12-23T07:00:00+05:30';
+
+  const escapeHTML = str => String(str ?? '').replace(/[&<>"']/g, ch => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+  ));
+
   /* ---------------------------------------------------------------
      Countdown
      --------------------------------------------------------------- */
-  function initCountdown() {
-    // Counts down to when the evening starts for guests (Baraati, 6 PM), not to
-    // the 11 PM ceremony — change this to T23:00 if you'd rather it target that.
-    const weddingTime = new Date('2026-12-23T18:00:00+05:30').getTime();
+  function initCountdown(target) {
+    const parsed = target ? new Date(target).getTime() : NaN;
+    const weddingTime = Number.isFinite(parsed) ? parsed : new Date(DEFAULT_COUNTDOWN).getTime();
     const els = Object.fromEntries(
       ['days', 'hours', 'minutes', 'seconds'].map(id => [id, $(id)])
     );
@@ -46,6 +57,180 @@
     };
     tick();
     setInterval(tick, 1000);
+  }
+
+  /* ---------------------------------------------------------------
+     config.json
+
+     Everything that differs between the bride and groom repos. Simple text
+     comes from data-bind attributes; the three variable-length lists
+     (schedule, venues, compliments) get dedicated renderers.
+     --------------------------------------------------------------- */
+
+  /** Resolve "couple.top.name" or "venues.0.address" against the config object. */
+  const getPath = (obj, path) =>
+    path.split('.').reduce((o, key) => (o == null ? undefined : o[key]), obj);
+
+  const isText = v => typeof v === 'string' && v.trim() !== '';
+
+  function applyBindings(cfg) {
+    document.querySelectorAll('[data-bind]').forEach(el => {
+      const value = getPath(cfg, el.dataset.bind);
+      if (!isText(value)) return;              // keep the markup fallback
+      if ('bindAmp' in el.dataset) {
+        // "A & B" reads better stacked around a gold ampersand than on one line.
+        const parts = value.split(/\s*&\s*/);
+        el.innerHTML = parts.length > 1
+          ? parts.map(escapeHTML).join('<br /><span>&amp;</span><br />')
+          : escapeHTML(value);
+      } else {
+        el.textContent = value;
+      }
+    });
+  }
+
+  /** Group schedule entries by their `date`, preserving config order. */
+  function groupByDate(schedule) {
+    const days = [];
+    for (const item of schedule) {
+      const key = isText(item.date) ? item.date.trim() : '';
+      let day = days.find(d => d.date === key);
+      if (!day) { day = { date: key, items: [] }; days.push(day); }
+      day.items.push(item);
+    }
+    return days;
+  }
+
+  /** "23 Dec" -> "23 December", so the day heading reads properly. */
+  const MONTHS = { jan: 'January', feb: 'February', mar: 'March', apr: 'April', may: 'May', jun: 'June',
+                   jul: 'July', aug: 'August', sep: 'September', oct: 'October', nov: 'November', dec: 'December' };
+  function longDate(short) {
+    const m = String(short).trim().match(/^(\d{1,2})\s+([A-Za-z]{3})/);
+    if (!m) return short;
+    return `${m[1]} ${MONTHS[m[2].toLowerCase()] || m[2]}`;
+  }
+
+  function renderSchedule(cfg) {
+    const host = $('scheduleDays');
+    const schedule = Array.isArray(cfg?.schedule) ? cfg.schedule.filter(i => isText(i?.title)) : [];
+    if (!host || !schedule.length) return;     // keep the markup fallback
+
+    host.innerHTML = groupByDate(schedule).map(day => `
+      <section class="schedule-day">
+        ${day.date ? `<h3 class="schedule-day-label">${escapeHTML(longDate(day.date))}</h3>` : ''}
+        <ol class="timeline">
+          ${day.items.map(item => {
+            const venue = isText(item.venueName)
+              ? (isText(item.mapsUrl)
+                  ? `<p class="timeline-venue"><a href="${escapeHTML(item.mapsUrl)}" target="_blank" rel="noreferrer">${escapeHTML(item.venueName)}</a></p>`
+                  : `<p class="timeline-venue">${escapeHTML(item.venueName)}</p>`)
+              : '';
+            const time = isText(item.time) ? escapeHTML(item.time) : '';
+            return `
+            <li class="timeline-item">
+              <p class="timeline-time">${isText(item.iso)
+                ? `<time datetime="${escapeHTML(item.iso)}">${time}</time>` : time}</p>
+              <div class="timeline-copy">
+                <h3>${escapeHTML(item.title)}</h3>
+                ${venue}
+              </div>
+            </li>`;
+          }).join('')}
+        </ol>
+      </section>`).join('');
+  }
+
+  /** Summary card above the timeline: first event, and how far the celebrations run. */
+  function renderWhenSummary(cfg) {
+    const schedule = Array.isArray(cfg?.schedule) ? cfg.schedule.filter(i => isText(i?.title)) : [];
+    if (schedule.length < 1) return;
+    const first = schedule[0];
+    const last = schedule[schedule.length - 1];
+    const primary = $('whenPrimary');
+    const span = $('whenSpan');
+    if (primary && isText(first.time)) {
+      primary.textContent = `${isText(first.date) ? `${first.date}, ` : ''}${first.time} onwards`;
+    }
+    if (span) {
+      span.textContent = (last !== first && isText(last.time))
+        ? `through ${isText(last.date) ? `${last.date}, ` : ''}${last.time}`
+        : '';
+      span.hidden = !span.textContent;
+    }
+  }
+
+  function renderVenues(cfg) {
+    const host = $('venueList');
+    const venues = Array.isArray(cfg?.venues) ? cfg.venues.filter(v => isText(v?.name)) : [];
+    if (!host || !venues.length) return;       // keep the markup fallback
+
+    // With a single venue the section heading carries its name, so repeating it
+    // on the card would just say the same thing twice.
+    const single = venues.length === 1;
+    const heading = $('venueHeading');
+    if (heading) heading.textContent = single ? venues[0].name : 'The venues';
+
+    host.innerHTML = venues.map(v => `
+      <article class="glass-card venue-card">
+        ${single ? '' : `<h3>${escapeHTML(v.name)}</h3>`}
+        ${isText(v.address) ? `<p class="venue-address">${escapeHTML(v.address)}</p>` : ''}
+        ${isText(v.note) ? `<p class="venue-note">${escapeHTML(v.note)}</p>` : ''}
+        ${isText(v.mapsUrl)
+          ? `<a class="primary-btn" href="${escapeHTML(v.mapsUrl)}" target="_blank" rel="noreferrer">Open Google Maps</a>`
+          : ''}
+      </article>`).join('');
+  }
+
+  function renderCompliments(cfg) {
+    const section = $('compliments');
+    const host = $('complimentsList');
+    const names = Array.isArray(cfg?.bestCompliments?.names)
+      ? cfg.bestCompliments.names.filter(isText)
+      : [];
+    if (!section || !host) return;
+
+    // No names yet? Hide the section rather than show an empty heading.
+    if (!names.length) { section.remove(); return; }
+    host.innerHTML = names.map(n => `<li>${escapeHTML(n)}</li>`).join('');
+    section.hidden = false;
+  }
+
+  function renderRsvp(cfg) {
+    const rsvp = cfg?.rsvp;
+    if (!rsvp) return;
+    const phone = isText(rsvp.phone) ? rsvp.phone.replace(/\s+/g, '') : '';
+    const btn = $('rsvpBtn');
+    const call = $('rsvpCallBtn');
+    const name = $('rsvpContactName');
+    const relation = $('rsvpContactRelation');
+
+    if (phone && btn) btn.href = `sms:${phone}`;
+    if (phone && call) call.href = `tel:${phone}`;
+    if (isText(rsvp.contactName) && name) name.textContent = rsvp.contactName;
+    if (isText(rsvp.contactRelation) && relation) relation.textContent = rsvp.contactRelation;
+    if (!phone) { call?.remove(); }
+  }
+
+  async function initFromConfig() {
+    let cfg = null;
+    try {
+      const res = await fetch('config.json', { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      cfg = await res.json();
+    } catch (error) {
+      console.info('[config] using markup defaults:', error.message);
+    }
+
+    if (cfg) {
+      applyBindings(cfg);
+      renderWhenSummary(cfg);
+      renderSchedule(cfg);
+      renderVenues(cfg);
+      renderRsvp(cfg);
+    }
+    // Runs either way: with no config there are no names, so the section goes.
+    renderCompliments(cfg);
+    return cfg;
   }
 
   /* ---------------------------------------------------------------
@@ -189,13 +374,26 @@
     if (document.fonts?.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
   }
 
+  /**
+   * Fade out the hero's scroll cue once the guest has clearly started reading.
+   * Deliberately IntersectionObserver rather than ScrollTrigger: it needs no
+   * position caching, so it can't go stale if the layout shifts underneath it.
+   */
+  function initScrollCue() {
+    const cue = $('scrollCue');
+    if (!cue) return;
+    const target = document.querySelector('#families') || document.querySelector('#invite');
+    if (!target || !('IntersectionObserver' in window)) return;
+
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { cue.classList.add('is-hidden'); io.disconnect(); }
+    }, { threshold: 0.2 });
+    io.observe(target);
+  }
+
   /* ---------------------------------------------------------------
      Photo gallery
      --------------------------------------------------------------- */
-
-  const escapeHTML = str => String(str ?? '').replace(/[&<>"']/g, ch => (
-    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
-  ));
 
   /** A photo is usable if the build script gave it something to render. */
   const usable = p => p && !p.missing && typeof p.src === 'string' && p.src.trim() !== '';
@@ -317,14 +515,16 @@
     return { open };
   }
 
-  async function initGallery() {
+  async function initGallery(cfg) {
     const section = $('gallery');
     const slidesEl = $('gallerySlides');
     if (!section || !slidesEl) return;
 
+    const photosPath = isText(cfg?.gallery?.photosJson) ? cfg.gallery.photosJson : 'photos/photos.json';
+
     let data;
     try {
-      const response = await fetch('photos/photos.json', { cache: 'no-cache' });
+      const response = await fetch(photosPath, { cache: 'no-cache' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       data = await response.json();
     } catch (error) {
@@ -340,10 +540,11 @@
       return;
     }
 
+    // config.json wins over photos.json, so the two repos can word this
+    // differently without touching the photo data.
     const headingEl = section.querySelector('[data-gallery-heading]');
-    if (headingEl && typeof data.heading === 'string' && data.heading.trim()) {
-      headingEl.textContent = data.heading.trim();
-    }
+    const heading = isText(cfg?.gallery?.heading) ? cfg.gallery.heading : data.heading;
+    if (headingEl && isText(heading)) headingEl.textContent = heading.trim();
 
     section.style.setProperty('--card-ratio', String(cardRatio(photos)));
     slidesEl.innerHTML = photos.map(cardMarkup).join('');
@@ -468,9 +669,18 @@
 
   /* ---------------------------------------------------------------
      Go
+
+     Order matters: config populates the DOM first, so ScrollTrigger measures
+     the final layout. Measuring before the schedule and venue lists are built
+     would leave triggers pointing at stale positions — the same class of bug
+     that `content-visibility: auto` used to cause here.
      --------------------------------------------------------------- */
-  initCountdown();
-  initScrollEffects(initPetals());
-  initMusic();
-  initGallery();
+  (async () => {
+    const cfg = await initFromConfig();
+    initCountdown(cfg?.countdownTarget);
+    initScrollEffects(initPetals());
+    initScrollCue();
+    initMusic();
+    await initGallery(cfg);
+  })();
 })();
