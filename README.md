@@ -207,13 +207,35 @@ assets/                 couple photo, music, calendar file, icons, share image
 |---|---|
 | Names, parents, schedule, venues, RSVP contact | `config.json` (then `npm run calendar`) |
 | Best-compliments names | `bestCompliments.names` in `config.json` |
-| Fonts | the four `--font-*` custom properties in `:root` in `styles.css` |
+| Fonts, sizes, weights, tracking | the TYPE SYSTEM block in `:root` in `styles.css` |
 | Colours | the palette custom properties at the top of `styles.css` |
 | Gallery heading | `gallery.heading` in `config.json` |
 | RSVP wording, number, contact | `rsvp` block in `config.json` |
 | Which photo folder is used | `gallery.photosDir` in `config.json` |
 | Length of the opening gate scroll | `.gate-scene { height }` in `styles.css` |
 | Countdown target | `countdownTarget` in `config.json` |
+
+## Typography
+
+Every font, size, weight, letter-spacing and line-height lives in one **TYPE SYSTEM** block at the
+top of `styles.css`. Nothing below that block hardcodes a size or tracking — they all reference a
+token, so the page stays uniform and one edit changes it everywhere.
+
+Three faces, chosen to complement rather than compete:
+
+| Face | Role | Why |
+|---|---|---|
+| **Cormorant Garamond** | headings *and* body | one family doing both keeps them visibly related; drawn for display use at light weights |
+| **Italianno** | script flourishes only | true copperplate, for the kicker, the names, "weds" and the closing line |
+| **Jost** | small-caps labels and buttons | geometric and neutral, which is what lets Cormorant carry the page |
+
+Display text is set at weight **500** everywhere. Going heavier flattens Cormorant's stroke
+contrast, which is the whole reason to use it.
+
+The hero names are the one place where size can't be purely declarative: they come from
+`config.json`, so `script.js` measures the rendered text and shrinks `--hero-fit` only if a name
+would otherwise be clipped. "Shweta"/"Swapnil" need no shrinking on an iPhone 15; a 12-character
+name scales to 0.897 and still fits.
 
 ## Notes
 

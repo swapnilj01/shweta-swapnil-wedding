@@ -17,14 +17,64 @@
   --ease: cubic-bezier(.2,.82,.15,1);
   --gate-open: 0;
 
-  /* Typography. Change a face here and it changes everywhere.
-     Cormorant Garamond is the classic wedding-stationery serif: high contrast,
-     designed for display sizes at light weights. Italianno is true copperplate
-     calligraphy. Jost carries the small-caps labels. */
+  /* ==========================================================
+     TYPE SYSTEM — the single source of truth for every font,
+     size, weight, tracking and leading on this page.
+
+     Nothing below this block should hardcode a font-size or a
+     letter-spacing; it should reference one of these tokens, so
+     the page stays uniform and one edit here changes everything.
+
+     Three faces, chosen to complement rather than compete:
+       Cormorant Garamond — display + body. One family doing both
+         keeps headings and paragraphs visibly related.
+       Italianno — copperplate script, for the few romantic
+         flourishes (kicker, names, "weds", the closing line).
+       Jost — geometric sans, small-caps labels and buttons only.
+         Its neutrality is what lets Cormorant carry the page.
+     ========================================================== */
   --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
   --font-body:    'Cormorant Garamond', Georgia, serif;
   --font-script:  'Italianno', 'Snell Roundhand', cursive;
   --font-ui:      'Jost', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Scale. Each step is fluid between a phone and a desktop bound.
+     The vw coefficients are deliberately conservative: at 393px
+     (iPhone 15) the longest name must still fit the hero. */
+  --fs-hero:        clamp(40px, 13.5vw, 84px);   /* the two names; script.js shrinks it further only if a name would not fit */
+  --fs-script-xl:   clamp(36px, 11.5vw, 68px);   /* kicker, closing line */
+  --fs-script-lg:   clamp(34px, 10.5vw, 58px);   /* "weds", family names */
+  --fs-script-md:   clamp(28px, 8vw, 40px);      /* the small "weds" hinge */
+  --fs-display-xl:  clamp(34px, 10.5vw, 60px);   /* closed gate title */
+  --fs-display-lg:  clamp(32px, 8.5vw, 52px);    /* h2 section headings */
+  --fs-display-md:  clamp(27px, 6.8vw, 40px);    /* gallery heading */
+  --fs-display-sm:  clamp(24px, 6vw, 32px);      /* h3: timeline, venues */
+  --fs-timer:       clamp(30px, 9vw, 48px);      /* countdown digits */
+  --fs-body-lg:     clamp(18px, 4.6vw, 22px);    /* intro and lead copy */
+  --fs-body:        clamp(17px, 4.2vw, 19px);    /* captions, descriptions */
+  --fs-ui-lg:       clamp(14px, 3.6vw, 16px);    /* buttons, timeline times */
+  --fs-label:       11px;                        /* small-caps labels */
+  --fs-label-sm:    10px;                        /* the smallest labels */
+
+  /* Weights. Cormorant is drawn for display use at light weights;
+     going heavier flattens its stroke contrast, which is the whole
+     reason to use it. */
+  --fw-display: 500;
+  --fw-body:    400;
+  --fw-ui:      500;
+
+  /* Tracking. Wide on small caps, near-neutral on display serif. */
+  --ls-label:       .26em;
+  --ls-label-wide:  .3em;
+  --ls-label-tight: .18em;
+  --ls-btn:         .12em;
+  --ls-hero:        .06em;
+  --ls-display:     .01em;
+
+  /* Leading. */
+  --lh-display: 1.08;
+  --lh-body:    1.55;
+  --lh-tight:   1;
 }
 
 * { box-sizing: border-box; }
@@ -39,8 +89,8 @@ body {
     linear-gradient(145deg, #310812 0%, var(--maroon) 43%, #25050e 100%);
   color: var(--ivory);
   font-family: var(--font-body);
-  font-weight: 400;
-  line-height: 1.5;
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -320,8 +370,8 @@ img { max-width: 100%; }
   color: var(--ink);
   background: linear-gradient(135deg, #fff5d8, #f3bc62);
   box-shadow: 0 10px 24px rgba(0,0,0,.23);
-  font: 500 10px/1 var(--font-ui);
-  letter-spacing: .24em;
+  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
 }
 .hero-text {
@@ -335,7 +385,7 @@ img { max-width: 100%; }
   margin: 0;
   font-family: var(--font-script);
   color: #ffe0a3;
-  font-size: clamp(42px, 13.5vw, 76px);
+  font-size: var(--fs-script-xl);
   line-height: .82;
   text-shadow: 0 0 30px rgba(255, 208, 119, .36);
 }
@@ -348,14 +398,21 @@ h1 {
   text-align: center;
   font-family: var(--font-display);
   text-transform: uppercase;
-  font-weight: 500;
-  letter-spacing: .07em;
+  font-weight: var(--fw-display);
+  letter-spacing: var(--ls-hero);
   text-shadow: 0 12px 42px rgba(0,0,0,.42);
 }
-h1 span { font-size: clamp(50px, 15.5vw, 88px); line-height: .92; }
+/* --hero-fit is normally 1. script.js lowers it only if a name is too long for
+   the hero at the current width — names come from config.json, so the scale
+   alone can't guarantee a fit for every possible name. */
+h1 span {
+  font-size: calc(var(--fs-hero) * var(--hero-fit, 1));
+  line-height: .92;
+  white-space: nowrap;
+}
 h1 em {
   margin: 1px 0 0;
-  font: normal clamp(40px, 12.5vw, 66px)/.84 var(--font-script);
+  font: normal var(--fs-script-lg)/.84 var(--font-script);
   text-transform: none;
   letter-spacing: 0;
   color: var(--gold);
@@ -364,7 +421,7 @@ h1 em {
   max-width: 360px;
   margin: 20px auto 0;
   color: #fff3d2;
-  font-size: clamp(19px, 5.2vw, 24px);
+  font-size: var(--fs-body-lg);
   line-height: 1.45;
 }
 
@@ -482,15 +539,15 @@ h1 em {
 }
 .closed-title p {
   margin: 0 0 7px;
-  font: 500 11px/1 var(--font-ui);
+  font: var(--fw-ui) var(--fs-label)/var(--lh-tight) var(--font-ui);
   text-transform: uppercase;
-  letter-spacing: .3em;
+  letter-spacing: var(--ls-label-wide);
   color: #ffe9ad;
 }
 .closed-title strong {
   display: block;
-  font: 500 clamp(35px, 11vw, 62px)/1.04 var(--font-display);
-  letter-spacing: .04em;
+  font: 500 var(--fs-display-xl)/1.04 var(--font-display);
+  letter-spacing: var(--ls-display);
   color: #fff8e6;
   text-shadow: 0 14px 40px rgba(0,0,0,.42);
 }
@@ -500,8 +557,8 @@ h1 em {
   padding: 10px 16px;
   border: 1px solid rgba(255, 232, 169, .38);
   border-radius: 999px;
-  font: 500 10px/1 var(--font-ui);
-  letter-spacing: .22em;
+  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   background: rgba(44, 5, 15, .42);
   backdrop-filter: blur(10px);
@@ -543,21 +600,21 @@ h1 em {
 .glass-card { padding: 34px 24px; text-align: center; }
 .label {
   margin: 0 0 14px;
-  font: 500 11px/1.15 var(--font-ui);
+  font: var(--fw-ui) var(--fs-label)/1.15 var(--font-ui);
   text-transform: uppercase;
-  letter-spacing: .3em;
+  letter-spacing: var(--ls-label-wide);
   color: #a76516;
 }
 h2 {
   font-family: var(--font-display);
-  font-size: clamp(35px, 9vw, 56px);
-  font-weight: 500;
+  font-size: var(--fs-display-lg);
+  font-weight: var(--fw-display);
   line-height: 1.06;
-  letter-spacing: .012em;
+  letter-spacing: var(--ls-display);
   color: #650c22;
 }
 .invitation-text, .venue-address, .rsvp-inner p {
-  font-size: clamp(18px, 4.4vw, 21px);
+  font-size: var(--fs-body-lg);
   line-height: 1.55;
 }
 .invitation-text { margin: 18px 0 0; color: #5d2631; }
@@ -670,14 +727,14 @@ h2 {
 }
 .timer strong {
   display: block;
-  font: 500 clamp(32px, 10vw, 50px)/.95 var(--font-display);
-  letter-spacing: .01em;
+  font: 500 var(--fs-timer)/.95 var(--font-display);
+  letter-spacing: var(--ls-display);
   color: #620c22;
   font-variant-numeric: tabular-nums;   /* stops the digits jittering each second */
 }
 .timer span {
-  font: 500 10px/1 var(--font-ui);
-  letter-spacing: .22em;
+  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: #a76516;
 }
@@ -702,17 +759,17 @@ h2 {
 .venue-card h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(27px, 6.6vw, 36px);
-  font-weight: 500;
+  font-size: var(--fs-display-sm);
+  font-weight: var(--fw-display);
   line-height: 1.1;
-  letter-spacing: .01em;
+  letter-spacing: var(--ls-display);
   color: #650c22;
 }
 .venue-card .venue-address { margin: 8px 0 0; }
 .venue-note {
   margin: 10px 0 0;
-  font: 500 10px/1.5 var(--font-ui);
-  letter-spacing: .18em;
+  font: var(--fw-ui) var(--fs-label-sm)/1.5 var(--font-ui);
+  letter-spacing: var(--ls-label-tight);
   text-transform: uppercase;
   color: #a76516;
 }
@@ -743,8 +800,8 @@ h2 {
   padding: 14px 18px;
   border-radius: 999px;
   text-decoration: none;
-  font: 500 12px/1 var(--font-ui);
-  letter-spacing: .12em;
+  font: var(--fw-ui) var(--fs-label)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-btn);
   text-transform: uppercase;
 }
 .primary-btn, .mail-btn {
@@ -792,8 +849,8 @@ h2 {
   gap: .34em;
   flex-wrap: wrap;
   text-transform: none;
-  letter-spacing: .02em;
-  font-size: clamp(14px, 3.8vw, 16px);
+  letter-spacing: var(--ls-display);
+  font-size: var(--fs-ui-lg);
   overflow-wrap: anywhere;
 }
 .rsvp-call-btn {
@@ -805,8 +862,8 @@ h2 {
 }
 .rsvp-inner .rsvp-contact-note {
   margin: 12px 0 0;
-  font: 500 10px/1 var(--font-ui);
-  letter-spacing: .26em;
+  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: rgba(255, 235, 197, .68);
 }
@@ -814,7 +871,7 @@ h2 {
   display: block;
   margin-top: 24px !important;
   color: #ffe0a2 !important;
-  font-size: clamp(40px, 12vw, 64px);
+  font-size: var(--fs-script-xl);
 }
 
 .music-pill {
@@ -833,8 +890,8 @@ h2 {
   background: rgba(48, 5, 17, .74);
   box-shadow: 0 14px 34px rgba(0,0,0,.28);
   backdrop-filter: blur(12px);
-  font: 500 11px/1 var(--font-ui);
-  letter-spacing: .12em;
+  font: var(--fw-ui) var(--fs-label)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-btn);
   text-transform: uppercase;
 }
 .music-pill.paused b { opacity: .68; }
@@ -1050,24 +1107,24 @@ h2 {
 .family-name {
   margin: 0 0 10px;
   font-family: var(--font-script);
-  font-size: clamp(46px, 14vw, 62px);
+  font-size: var(--fs-script-lg);
   line-height: .86;
   color: #8d1530;
 }
 .family-relation {
   margin: 0 0 10px;
-  font: 500 10px/1 var(--font-ui);
-  letter-spacing: .28em;
+  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label-wide);
   text-transform: uppercase;
   color: #a76516;
 }
 .family-parents {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(19px, 4.8vw, 23px);
-  font-weight: 500;
+  font-size: var(--fs-body-lg);
+  font-weight: var(--fw-display);
   line-height: 1.4;
-  letter-spacing: .01em;
+  letter-spacing: var(--ls-display);
   color: #5d2631;
 }
 .family-parents span {
@@ -1097,7 +1154,7 @@ h2 {
   position: relative;
   padding: 0 14px;
   font-family: var(--font-script);
-  font-size: clamp(30px, 8vw, 40px);
+  font-size: var(--fs-script-md);
   line-height: 1;
   color: var(--gold);
   text-shadow: 0 0 24px rgba(255, 208, 119, .3);
@@ -1125,7 +1182,7 @@ h2 {
   gap: 12px;
   text-align: center;
   font-family: var(--font-body);
-  font-size: clamp(18px, 4.6vw, 21px);
+  font-size: var(--fs-body-lg);
   line-height: 1.35;
   color: #fff3d6;
 }
@@ -1155,8 +1212,8 @@ h2 {
   margin: 0 0 16px;
   padding-bottom: 9px;
   border-bottom: 1px solid rgba(247, 198, 109, .22);
-  font: 500 11px/1 var(--font-ui);
-  letter-spacing: .3em;
+  font: var(--fw-ui) var(--fs-label)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label-wide);
   text-transform: uppercase;
   color: #ffe7aa;
 }
@@ -1165,9 +1222,9 @@ h2 {
   margin: 6px 0 0;
   font-family: var(--font-ui);
   font-style: normal;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: .16em;
+  font-size: var(--fs-label);
+  font-weight: var(--fw-display);
+  letter-spacing: var(--ls-label-tight);
   text-transform: uppercase;
   color: rgba(255, 231, 170, .62);
 }
@@ -1234,8 +1291,8 @@ h2 {
   margin: 0;
   padding-right: 16px;
   text-align: right;
-  font: 500 clamp(14px, 3.6vw, 16px)/1.35 var(--font-ui);
-  letter-spacing: .04em;
+  font: var(--fw-ui) var(--fs-ui-lg)/1.35 var(--font-ui);
+  letter-spacing: var(--ls-display);
   white-space: nowrap;               /* "11:00 PM" should not break across lines */
   color: #ffe7aa;
   font-variant-numeric: tabular-nums;
@@ -1244,7 +1301,7 @@ h2 {
   display: block;
   margin-top: 3px;
   font-size: 9px;
-  letter-spacing: .2em;
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: rgba(255, 231, 170, .62);
 }
@@ -1252,16 +1309,16 @@ h2 {
 .timeline-copy h3 {
   margin: 0 0 4px;
   font-family: var(--font-display);
-  font-size: clamp(24px, 6vw, 31px);
-  font-weight: 500;
+  font-size: var(--fs-display-sm);
+  font-weight: var(--fw-display);
   line-height: 1.1;
-  letter-spacing: .01em;
+  letter-spacing: var(--ls-display);
   color: #fff6e0;
 }
 .timeline-copy p {
   margin: 0;
   font-family: var(--font-body);
-  font-size: clamp(16px, 4vw, 18px);
+  font-size: var(--fs-body);
   font-style: italic;
   line-height: 1.45;
   color: rgba(255, 240, 214, .78);
@@ -1290,7 +1347,7 @@ h2 {
   width: min(100%, 560px);
 }
 .gallery-heading h2 {
-  font-size: clamp(28px, 6.6vw, 42px);
+  font-size: var(--fs-display-md);
   line-height: 1.16;
   text-wrap: balance;
 }
@@ -1379,15 +1436,15 @@ h2 {
 }
 .photo-card-event {
   margin: 0;
-  font: 500 10px/1 var(--font-ui);
-  letter-spacing: .26em;
+  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: #a76516;
 }
 .photo-card-caption {
   margin: 0;
   font-family: var(--font-body);
-  font-size: clamp(17px, 4.2vw, 19px);
+  font-size: var(--fs-body);
   font-style: italic;
   line-height: 1.45;
   color: #5d2631;
@@ -1420,8 +1477,8 @@ h2 {
 .gallery-hint {
   margin: 2px 0 0;
   text-align: center;
-  font: 500 10px/1 var(--font-ui);
-  letter-spacing: .26em;
+  font: var(--fw-ui) var(--fs-label-sm)/var(--lh-tight) var(--font-ui);
+  letter-spacing: var(--ls-label);
   text-transform: uppercase;
   color: rgba(255, 235, 197, .6);
   transition: opacity .5s var(--ease);
@@ -1486,7 +1543,7 @@ h2 {
 .lightbox-caption .photo-card-event { color: var(--gold); }
 .lightbox-caption .photo-card-caption {
   color: #fff3d6;
-  font-size: clamp(16px, 4vw, 19px);
+  font-size: var(--fs-body);
 }
 .lightbox-close {
   position: absolute;

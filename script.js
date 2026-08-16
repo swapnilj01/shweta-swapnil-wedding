@@ -441,6 +441,47 @@
     });
   }
 
+  /**
+   * Shrink the hero names just enough to fit the width.
+   *
+   * The type scale is tuned so "Shweta" and "Swapnil" fit an iPhone 15, but the
+   * names come from config.json — the groom repo swaps them, and a longer one
+   * would silently get clipped by .gate-sticky's overflow:hidden. This measures
+   * the real rendered text and scales down only when it has to.
+   */
+  function initHeroFit() {
+    const h1 = document.querySelector('h1');
+    if (!h1) return;
+    const spans = [...h1.querySelectorAll('span')];
+    if (!spans.length) return;
+
+    /* A Range measures the text itself, so a clipped parent can't hide the
+       true width the way scrollWidth sometimes does. */
+    const textWidth = el => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      return range.getBoundingClientRect().width;
+    };
+
+    const fit = () => {
+      h1.style.setProperty('--hero-fit', '1');
+      const available = h1.clientWidth;
+      if (!available) return;
+      const widest = Math.max(...spans.map(textWidth));
+      if (widest > available) {
+        // 0.98 leaves a hair of breathing room; 0.6 stops a pathological name
+        // shrinking the title into illegibility.
+        h1.style.setProperty('--hero-fit', Math.max(0.6, (available / widest) * 0.98).toFixed(3));
+      }
+    };
+
+    fit();
+    // Cormorant loads after first paint and is wider than the fallback serif.
+    document.fonts?.ready.then(fit);
+    window.addEventListener('resize', fit, { passive: true });
+    window.addEventListener('orientationchange', fit, { passive: true });
+  }
+
   /* ---------------------------------------------------------------
      Section dividers
 
@@ -774,6 +815,7 @@
      --------------------------------------------------------------- */
   (async () => {
     const cfg = await initFromConfig();
+    initHeroFit();                    // after binding: the names may have changed
     initCountdown(cfg?.countdownTarget);
     initScrollEffects(initPetals());
     initMusic();
