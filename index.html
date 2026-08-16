@@ -86,7 +86,7 @@
 
         <div class="closed-title" aria-hidden="true">
           <p>Wedding Invitation</p>
-          <strong>Shweta &amp; Swapnil</strong>
+          <strong data-bind="hero.title">Shweta &amp; Swapnil</strong>
           <small>Scroll to open the gates</small>
         </div>
       </div>
@@ -98,8 +98,8 @@
       <article class="glass-card invite-card reveal">
         <div class="lotus-mark" aria-hidden="true"></div>
         <p class="label">Wedding Invitation</p>
-        <h2>Our forever begins here</h2>
-        <p class="invitation-text">With love, laughter, and blessings, we invite you to witness the wedding celebration of Shweta and Swapnil as they begin their forever journey.</p>
+        <h2 data-bind="invitation.heading">Our forever begins here</h2>
+        <p class="invitation-text" data-bind="invitation.text">With love, laughter, and blessings, we invite you to witness the wedding celebration of Shweta and Swapnil as they begin their forever journey.</p>
         <div class="gold-rule" aria-hidden="true"><span></span></div>
       </article>
     </section>
@@ -210,7 +210,7 @@
       </div>
 
       <div class="venue-cta reveal">
-        <a class="ghost-btn" href="assets/shweta-swapnil-wedding.ics" download>Add all events to calendar</a>
+        <a class="ghost-btn" href="assets/wedding.ics" download>Add all events to calendar</a>
       </div>
     </section>
 

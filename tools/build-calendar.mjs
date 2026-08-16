@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates assets/shweta-swapnil-wedding.ics from config.json.
+ * Generates assets/wedding.ics from config.json.
  *
  *   npm run calendar
  *
@@ -18,7 +18,7 @@ import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONFIG = path.join(ROOT, 'config.json');
-const OUT = path.join(ROOT, 'assets', 'shweta-swapnil-wedding.ics');
+const OUT = path.join(ROOT, 'assets', 'wedding.ics');
 
 /** Default length of an event when we can't infer one from the next entry. */
 const DEFAULT_MINUTES = 90;

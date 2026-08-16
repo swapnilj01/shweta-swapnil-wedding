@@ -16,7 +16,12 @@
   "hero": {
     "kicker": "You are invited to celebrate",
     "tagline": "Be a part of two souls witnessing the start of their forever journey.",
-    "heroDate": "23 December 2026"
+    "heroDate": "23 December 2026",
+    "title": "Shweta & Swapnil"
+  },
+  "invitation": {
+    "heading": "Our forever begins here",
+    "text": "With love, laughter, and blessings, we invite you to witness the wedding celebration of Shweta and Swapnil as they begin their forever journey."
   },
   "countdownTarget": "2026-12-23T07:00:00+05:30",
   "schedule": [

@@ -110,7 +110,6 @@ Every value in `config.json` also exists as hardcoded fallback text in `index.ht
 file fails to load the page still reads correctly — it just shows this side's defaults.
 
 **Conventions worth knowing:**
-- `venues[0]` is treated as the headline venue for the summary card, so put the main one first.
 - With exactly one venue, its name becomes the section heading and is omitted from the card, so
   it isn't printed twice.
 - `bestCompliments.names` currently holds placeholders (`Name 1`…). **Replace them** — if the list
