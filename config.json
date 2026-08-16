@@ -59,7 +59,7 @@
     },
     {
       "date": "24 Dec",
-      "time": "4:10 AM",
+      "time": "4:00 AM",
       "iso": "2026-12-24T04:10:00+05:30",
       "title": "Hastagranthi",
       "venueName": "Greenland Resort",
@@ -85,15 +85,13 @@
   "bestCompliments": {
     "heading": "Best Compliments From",
     "names": [
-      "Name 1",
-      "Name 2",
-      "Name 3"
+      "Friends and Family"
     ]
   },
   "rsvp": {
     "contactName": "AVN Sridhar Kumar",
     "contactRelation": "Bride's Father",
-    "phone": "+917978166436",
+    "phone": "+919861612319",
     "heading": "Celebrate with us",
     "message": "We would be delighted to have you with us for this beautiful beginning.",
     "buttonLabel": "Send RSVP",
