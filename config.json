@@ -5,12 +5,12 @@
     "top": {
       "name": "Shweta",
       "relation": "Daughter of",
-      "parents": "Mr. AVN Sridhar Kumar & Mrs. C Jyoti"
+      "parents": "Mrs. C Jyoti & Mr. AVN Sridhar Kumar"
     },
     "bottom": {
       "name": "Swapnil",
       "relation": "Son of",
-      "parents": "Dr. Shyamakant Jena & Mrs. Sunanda Jena"
+      "parents": "Mrs. Sunanda Jena & Dr. Shyamakant Jena"
     }
   },
   "hero": {
@@ -59,7 +59,7 @@
     },
     {
       "date": "24 Dec",
-      "time": "4:00 AM",
+      "time": "4:26 AM",
       "iso": "2026-12-24T04:10:00+05:30",
       "title": "Hastagranthi",
       "venueName": "Greenland Resort",
