@@ -51,9 +51,9 @@
     },
     {
       "date": "23 Dec",
-      "time": "11:00 PM",
+      "time": "7:30 PM",
       "iso": "2026-12-23T23:00:00+05:30",
-      "title": "Wedding",
+      "title": "Reception",
       "venueName": "Greenland Resort",
       "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48"
     },
@@ -64,14 +64,6 @@
       "title": "Sumurutam",
       "venueName": "Greenland Resort",
       "mapsUrl": "https://maps.app.goo.gl/hMzEbQEMX5zCqHz48"
-    },
-    {
-      "date": "24 Dec",
-      "time": "10:00 AM",
-      "iso": "2026-12-24T10:00:00+05:30",
-      "title": "Vidai",
-      "venueName": "",
-      "mapsUrl": ""
     }
   ],
   "venues": [
