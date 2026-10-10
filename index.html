@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#420616" />
   <title>Shweta weds Swapnil | Wedding Invitation</title>
-  <meta name="description" content="Wedding invitation for Shweta and Swapnil on 23 December 2026 at Greenland Resort, Patia, Bhubaneshwar." />
+  <meta name="description" content="With the blessings of our elders, we invite you to celebrate the wedding of Shweta and Swapnil." />
 
   <!-- ===================================================================
        SITE_URL = https://swapnilj01.github.io/shweta-swapnil-wedding/
@@ -21,29 +21,34 @@
   <meta property="og:site_name" content="Shweta weds Swapnil" />
   <meta property="og:locale" content="en_IN" />
   <meta property="og:title" content="Shweta weds Swapnil · 23 December 2026" />
-  <meta property="og:description" content="Be a part of two souls witnessing the start of their forever journey. Greenland Resort, Bhubaneshwar." />
+  <meta property="og:description" content="With the blessings of our elders, we invite you to celebrate the wedding of Shweta and Swapnil." />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Shweta and Swapnil in traditional wedding attire before a carved temple wall" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Shweta weds Swapnil · 23 December 2026" />
-  <meta name="twitter:description" content="Be a part of two souls witnessing the start of their forever journey." />
+  <meta name="twitter:description" content="With the blessings of our elders, we invite you to celebrate the wedding of Shweta and Swapnil." />
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Italianno&family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Fonts are self-hosted and preloaded, so they arrive with the page instead
+       of after a second-origin round trip. The hero waits for them (see the
+       fonts-pending class below), so it never paints in a fallback face first. -->
+  <link rel="preload" href="vendor/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="vendor/fonts/italianno.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="vendor/fonts/jost.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="vendor/fonts/fonts.css" />
+  <script>(function(d){d.classList.add('fonts-pending');setTimeout(function(){d.classList.remove('fonts-pending')},3000)})(document.documentElement);</script>
   <link rel="stylesheet" href="vendor/swiper/swiper-bundle.min.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Starts MUTED on purpose: muted autoplay is always permitted, so the track
-       is already buffered and running and the first tap only has to unmute it.
-       64 kbps AAC (2.5 MB for 5:26) and preload="metadata" so a weak connection
-       isn't blocked downloading audio before the page is usable. -->
-  <audio id="bgMusic" src="assets/music.m4a" autoplay loop muted playsinline preload="metadata"></audio>
+  <!-- Starts on the guest's first tap (see initMusic in script.js); browsers
+       block sound before that. preload="metadata" so a weak connection spends
+       its bandwidth on the page first; the file is "fast-start" (index before
+       data), so it begins playing within a second of the tap. -->
+  <audio id="bgMusic" src="assets/music.m4a" loop playsinline preload="metadata"></audio>
 
   <div class="grain" aria-hidden="true"></div>
   <div class="sky-glow" aria-hidden="true"></div>
@@ -90,7 +95,13 @@
         <div class="closed-title" aria-hidden="true">
           <p>Wedding Invitation</p>
           <strong data-bind="hero.title">Shweta &amp; Swapnil</strong>
-          <small>Scroll to open the gates</small>
+          <!-- A real button, not a hint. Browsers only allow sound after a tap or
+               a key press (scrolling does not count), so this tap is what makes
+               the music start reliably. Scrolling still opens the gates too. -->
+          <button class="gate-open-btn" id="gateOpenBtn" type="button">
+            <span class="gate-open-seal" aria-hidden="true"></span>
+            <span data-bind="hero.openLabel">Tap to open</span>
+          </button>
         </div>
       </div>
     </section>
@@ -100,10 +111,13 @@
       <div class="side-bloom side-bloom-right parallax-layer" data-speed="0.12" aria-hidden="true"></div>
       <article class="glass-card invite-card reveal">
         <div class="lotus-mark" aria-hidden="true"></div>
-        <p class="label">Wedding Invitation</p>
-        <h2 data-bind="invitation.heading">Our forever begins here</h2>
-        <p class="invitation-text" data-bind="invitation.text">With love, laughter, and blessings, we invite you to witness the wedding celebration of Shweta and Swapnil as they begin their forever journey.</p>
+        <p class="label" data-bind="invitation.label">Wedding Invitation</p>
+        <h2 data-bind="invitation.heading">With joy in our hearts</h2>
+        <p class="invitation-text" data-bind="invitation.text">With the blessings of the Almighty and our elders, we joyfully invite you and your family to grace the wedding of our daughter Shweta with Swapnil, son of Mrs. Sunanda Jena &amp; Dr. Shyamakant Jena. Your presence and blessings would mean the world to us.</p>
         <div class="gold-rule" aria-hidden="true"><span></span></div>
+        <!-- Who the invitation is from: the hosting parents. -->
+        <p class="invitation-from-label" data-bind="invitation.fromLabel">With warm regards</p>
+        <p class="invitation-from" data-bind="invitation.from" data-bind-amp>Mrs. C Jyoti<br /><span>&amp;</span><br />Mr. AVN Sridhar Kumar</p>
       </article>
     </section>
 
@@ -118,7 +132,7 @@
         <article class="glass-card family-card">
           <p class="family-name" data-bind="couple.top.name">Shweta</p>
           <p class="family-relation" data-bind="couple.top.relation">Daughter of</p>
-          <p class="family-parents" data-bind="couple.top.parents" data-bind-amp>Mr. AVN Sridhar Kumar<br /><span>&amp;</span><br />Mrs. C Jyoti</p>
+          <p class="family-parents" data-bind="couple.top.parents" data-bind-amp>Mrs. C Jyoti<br /><span>&amp;</span><br />Mr. AVN Sridhar Kumar</p>
         </article>
 
         <div class="family-join" aria-hidden="true"><span>weds</span></div>
@@ -126,7 +140,7 @@
         <article class="glass-card family-card">
           <p class="family-name" data-bind="couple.bottom.name">Swapnil</p>
           <p class="family-relation" data-bind="couple.bottom.relation">Son of</p>
-          <p class="family-parents" data-bind="couple.bottom.parents" data-bind-amp>Dr. Shyamakant Jena<br /><span>&amp;</span><br />Mrs. Sunanda Jena</p>
+          <p class="family-parents" data-bind="couple.bottom.parents" data-bind-amp>Mrs. Sunanda Jena<br /><span>&amp;</span><br />Dr. Shyamakant Jena</p>
         </article>
       </div>
     </section>
@@ -148,20 +162,20 @@
           <h3 class="schedule-day-label">23 December</h3>
           <ol class="timeline">
             <li class="timeline-item">
-              <p class="timeline-time"><time datetime="2026-12-23T07:00+05:30">7:00 AM</time></p>
+              <p class="timeline-time"><time datetime="2026-12-23T07:00:00+05:30">7:00 AM</time></p>
               <div class="timeline-copy"><h3>Snaatakalu</h3></div>
             </li>
             <li class="timeline-item">
-              <p class="timeline-time"><time datetime="2026-12-23T11:00+05:30">11:00 AM</time></p>
+              <p class="timeline-time"><time datetime="2026-12-23T11:00:00+05:30">11:00 AM</time></p>
               <div class="timeline-copy"><h3>Haldi Carnival</h3></div>
             </li>
             <li class="timeline-item">
-              <p class="timeline-time"><time datetime="2026-12-23T17:00+05:30">5:00 PM</time></p>
-              <div class="timeline-copy"><h3>Edrukolu (Varmala)</h3></div>
+              <p class="timeline-time"><time datetime="2026-12-23T17:00:00+05:30">5:00 PM</time></p>
+              <div class="timeline-copy"><h3>Edrukolu</h3></div>
             </li>
             <li class="timeline-item">
-              <p class="timeline-time"><time datetime="2026-12-23T23:00+05:30">11:00 PM</time></p>
-              <div class="timeline-copy"><h3>Wedding</h3><p class="timeline-venue">Greenland Resort</p></div>
+              <p class="timeline-time"><time datetime="2026-12-23T19:30:00+05:30">7:30 PM</time></p>
+              <div class="timeline-copy"><h3>Reception</h3><p class="timeline-venue">Greenland Resort</p></div>
             </li>
           </ol>
         </section>
@@ -169,12 +183,8 @@
           <h3 class="schedule-day-label">24 December</h3>
           <ol class="timeline">
             <li class="timeline-item">
-              <p class="timeline-time"><time datetime="2026-12-24T04:10+05:30">4:10 AM</time></p>
-              <div class="timeline-copy"><h3>Hastagranthi</h3><p class="timeline-venue">Greenland Resort</p></div>
-            </li>
-            <li class="timeline-item">
-              <p class="timeline-time"><time datetime="2026-12-24T10:00+05:30">10:00 AM</time></p>
-              <div class="timeline-copy"><h3>Vidai</h3></div>
+              <p class="timeline-time"><time datetime="2026-12-24T04:26:00+05:30">4:26 AM</time></p>
+              <div class="timeline-copy"><h3>Sumurutam</h3><p class="timeline-venue">Greenland Resort</p></div>
             </li>
           </ol>
         </section>
@@ -207,7 +217,7 @@
       <div class="venue-list reveal-stagger" id="venueList">
         <article class="glass-card venue-card">
           <p class="venue-address">Patia, Bhubaneshwar</p>
-          <p class="venue-note">Wedding, 23 Dec 11 PM &middot; Hastagranthi, 24 Dec 4:10 AM</p>
+          <p class="venue-note">Reception, 23 Dec 7:30 PM · Sumurutam, 24 Dec 4:26 AM</p>
           <a class="primary-btn" href="https://maps.app.goo.gl/hMzEbQEMX5zCqHz48" target="_blank" rel="noreferrer">Open Google Maps</a>
         </article>
       </div>
@@ -249,13 +259,13 @@
 
         <!-- Every part of this block comes from config.rsvp: the number, the
              contact's name and relation, and all three pieces of wording. -->
-        <a class="mail-btn" id="rsvpBtn" href="sms:+917978166436">
+        <a class="mail-btn" id="rsvpBtn" href="sms:+919861612319">
           <span id="rsvpButtonLabel">Send RSVP</span>
           <span aria-hidden="true">&mdash;</span>
           <span id="rsvpContactName">AVN Sridhar Kumar</span>
         </a>
-        <a class="ghost-btn rsvp-call-btn" id="rsvpCallBtn" href="tel:+917978166436">Call instead</a>
-        <p class="rsvp-contact-note" id="rsvpContactRelation">Bride&rsquo;s Father</p>
+        <a class="ghost-btn rsvp-call-btn" id="rsvpCallBtn" href="tel:+919861612319">Call instead</a>
+        <p class="rsvp-contact-note" id="rsvpContactRelation">Bride's Father</p>
 
         <p class="closing-script">See you under the flowers and lights.</p>
       </div>
